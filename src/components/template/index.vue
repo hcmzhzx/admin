@@ -94,7 +94,6 @@
                cancelButtonText: '取消',
                type: 'warning'
             }).then(() => {
-
                this.$http.delete(`theme/${id}`).then(()=>{
                   this.themeList = this.themeList.filter((item)=>{return item.id != id})
                })

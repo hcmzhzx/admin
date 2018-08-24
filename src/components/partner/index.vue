@@ -110,8 +110,8 @@
          }
 
          // 下拉框选项内容
-         this.$http.get('brands?sort=1').then(selec=>{
-            this.select = selec.data.map((item)=>{
+         this.$http.get('brands?sort=1').then(brands=>{
+            this.select = brands.data.map((item)=>{
                 let list = {};
                 list.value = item.id;
                 list.text = `${item.pinyin.substr(0, 1)}.${item.title}`;

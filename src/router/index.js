@@ -26,6 +26,8 @@ import template_index from '@/components/template/index'
 import template_add from '@/components/template/add'
 import template_edit from '@/components/template/edit'
 
+import user_index from '@/components/user/index'
+
 
 
 Vue.use(Router)
@@ -137,7 +139,11 @@ export default new Router({
                name: 'template_edit',
                component: template_edit
             },
-
+            {
+               path: 'user/index',
+               name: 'user_index',
+               component: user_index
+            },
 
 
 

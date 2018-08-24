@@ -1,11 +1,9 @@
 import Vue from 'vue'
 import App from './App'
+import router from './router'
 import store from './store'
 import ElementUi from 'element-ui'
-import router from './router'
 import axios from'./assets/js/axios'
-import layer from 'vue-layer'
-
 
 import {makePy} from './assets/js/pinyin'  // 首拼文件
 
@@ -13,7 +11,6 @@ Vue.use(ElementUi);
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
-Vue.prototype.$layer = layer(Vue)
 
 Vue.mixin({
    methods:{

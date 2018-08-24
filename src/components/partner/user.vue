@@ -100,11 +100,12 @@
       data(){
          return {
             text: [{txt:'品牌设置', src:'brand_index'}, {txt:'合作名单', src:`partner_index?id=${this.$route.query.id}`}, {txt:'合作管理员'}],
-            ID: ''  // 合作ID
+            ID: ''  // 品牌ID
          }
       },
       created(){
-         this.ID = this.$route.query.ID;
+         const id = this.ID = this.$route.query.ID;
+         console.log(id);
 
       },
       updated(){
@@ -113,7 +114,6 @@
          $('.table a[data-type="select"]').editable({
             emptytext: '--',
             showbuttons: false,
-            /*source: [..._this.select],*/
             success: function (res, val) {
                const ID = this.getAttribute('data-pk');
 

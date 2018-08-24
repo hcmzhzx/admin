@@ -34,7 +34,7 @@
                   <i class="glyphicon glyphicon-user"></i>会员管理<i class="glyphicon glyphicon-menu-down"></i>
                </a>
                <ul id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                  <li><a href="javascript:;" data-url="/user/index.html" title="会员名单" class="ajax-call">会员名单</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'user_index'})" title="会员名单" class="ajax-call">会员名单</a></li>
                   <li><a href="javascript:;" data-url="/user/order.html" title="支付订单" class="ajax-call">支付订单</a></li>
                </ul>
             </li>
