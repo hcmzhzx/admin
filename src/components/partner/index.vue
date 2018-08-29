@@ -4,13 +4,13 @@
       <div class="flexv content">
          <header class="between">
             <div class="opera">
-               <a href="javascript:;" @click="$router.push({name:'partner_add',query:{id:ID}})" class="btn btn-primary ajax-call" title="添加合作">添加合作</a>
+               <a href="javascript:;" @click="$router.push({name:'partner_add'})" class="btn btn-primary ajax-call" title="添加合作">添加合作</a>
             </div>
             <div class="search">
                <form class="form-inline">
                   <select name="brand_id" class="form-control">
                      <option value="">所属品牌</option>
-                     <option :value="item.value" v-for="item in select" :key="item.value">{{item.text}}</option>
+                     <option v-for="item in brandsList" :key="item.value" :value="item.value">{{item.text}}</option>
                   </select>
                   <select name="condition" class="form-control">
                      <option value="site_title">网站名称</option>
@@ -45,7 +45,7 @@
                <tr v-for="item in brandList" :key="item.id">
                   <td>{{item.id}}</td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(select)" :data-value="item.brand.id" class="editable editable-click">{{source(item.brand.title)}}</a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click">{{source(item.brand.title)}}</a>
                   </td>
                   <td>
                      <a href="#" data-type="text" :data-pk="item.id" data-name="site_title" class="editable editable-click">{{item.site_title}}</a>
@@ -89,8 +89,8 @@
       data(){
          return{
             text: [{txt:'品牌设置', src:'brand_index'}, {txt:'合作名单'}],
-            select:[],  // 下拉框内容
-            brandList:[] // 品牌列表
+            brandsList:[],  // 品牌列表
+            brandList:[] // 合作名单列表
          }
       },
       created(){
@@ -109,14 +109,9 @@
             })
          }
 
-         // 下拉框选项内容
-         this.$http.get('brands?sort=1').then(brands=>{
-            this.select = brands.data.map((item)=>{
-                let list = {};
-                list.value = item.id;
-                list.text = `${item.pinyin.substr(0, 1)}.${item.title}`;
-                return list
-            })
+         // 获取品牌列表
+         this.$store.dispatch('BrandsData').then(res=>{
+            this.brandsList = res
          })
       },
       updated(){
@@ -133,6 +128,7 @@
                _this.$http.patch(`partner/${ID}`,{brand_id:value})
             }
          });
+
          // 编辑框
          $('.table a[data-type!="select"][data-type]').editable({
             emptytext: '--',

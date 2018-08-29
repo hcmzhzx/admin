@@ -36,7 +36,7 @@
                <tr v-for="item in brandData" :key='item.id'>
                   <td>{{item.id}}</td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(select)" :data-value="item.brand.id" class="editable editable-click">{{py(item.brand.title)}}</a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click">{{py(item.brand.title)}}</a>
                   </td>
                   <td>
                      <a href="#" data-type="text" :data-pk="item.id" data-name="title" class="editable editable-click">{{item.title}}</a>
@@ -71,7 +71,7 @@
             text: [{txt:'品牌设置', src:'brand_index'}, {txt:'商品分类'}],
             ID:'',  // 品牌ID
             brandData:[],
-            select:[]  // 下拉框
+            brandsList:[]  // 品牌列表
          }
       },
       created(){
@@ -81,15 +81,10 @@
             this.brandData = res.data
          });
 
-         // 下拉框选项内容
-         this.$http.get('brands?sort=1').then(selec=>{
-            this.select = selec.data.map((item)=>{
-               let list = {};
-               list.value = item.id;
-               list.text = `${item.pinyin.substr(0, 1)}.${item.title}`;
-               return list
-            })
-         })
+         // 获取品牌列表
+         this.$store.dispatch('BrandsData').then(res=>{
+            this.brandsList = res
+         });
       },
       updated(){
          // 初始化编辑框

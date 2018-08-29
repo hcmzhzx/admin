@@ -39,12 +39,12 @@ Vue.mixin({
             cancelButtonText: '取消',
             type: 'warning'
          }).then(() => {
-            callback();
+            ele.parent().remove();
             this.$message({
                type: 'success',
                message: '删除成功!'
             });
-            ele.parent().remove();
+            callback();
          }).catch(()=>{});
       }
    }

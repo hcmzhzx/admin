@@ -35,7 +35,7 @@
                </a>
                <ul id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                   <li><a href="javascript:;" @click="$router.push({name:'user_index'})" title="会员名单" class="ajax-call">会员名单</a></li>
-                  <li><a href="javascript:;" data-url="/user/order.html" title="支付订单" class="ajax-call">支付订单</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'user_order'})" title="支付订单" class="ajax-call">支付订单</a></li>
                </ul>
             </li>
             <li class="panel">
@@ -43,9 +43,9 @@
                   <i class="glyphicon glyphicon-earphone"></i>售前管理<i class="glyphicon glyphicon-menu-down"></i>
                </a>
                <ul id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                  <li><a href="javascript:;" data-url="/service/beginsales.html" title="售前总名单" class="ajax-call">售前总名单</a></li>
-                  <li><a href="javascript:;" data-url="/service/beginsale.html" title="售前名单" class="ajax-call">售前名单</a></li>
-                  <li><a href="javascript:;" data-url="/service/search.html" title="会员搜索" class="ajax-call">会员搜索</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'service_beginsales'})" title="售前总名单" class="ajax-call">售前总名单</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'service_beginsale'})" title="售前名单" class="ajax-call">售前名单</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'service_search'})" title="会员搜索" class="ajax-call">会员搜索</a></li>
                </ul>
             </li>
             <li class="panel">
@@ -53,8 +53,8 @@
                   <i class="glyphicon glyphicon-earphone"></i>售后管理<i class="glyphicon glyphicon-menu-down"></i>
                </a>
                <ul id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                  <li><a href="javascript:;" data-url="/service/aftersales.html" title="售后总名单" class="ajax-call">售后总名单</a></li>
-                  <li><a href="javascript:;" data-url="/service/aftersale.html" title="售后名单" class="ajax-call">售后名单</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'service_aftersales'})" title="售后总名单" class="ajax-call">售后总名单</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'service_aftersale'})" title="售后名单" class="ajax-call">售后名单</a></li>
                </ul>
             </li>
             <li class="panel">
@@ -62,7 +62,7 @@
                   <i class="glyphicon glyphicon-shopping-cart"></i>商品管理<i class="glyphicon glyphicon-menu-down"></i>
                </a>
                <ul id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                  <li><a href="javascript:;" data-url="/goods/index.html" title="商品列表" class="ajax-call">商品列表</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'goods_index'})" data-url="/goods/index.html" title="商品列表" class="ajax-call">商品列表</a></li>
                </ul>
             </li>
             <li class="panel">

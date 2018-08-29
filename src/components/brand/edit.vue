@@ -73,15 +73,12 @@
                if(files.length == 0) return;
                const ele = this.parentNode, type = ele.getAttribute('data-type'), authority = ele.getAttribute('data-authority');
                $(ele).siblings().remove();
-               $(ele).before(`<div class="box list"><img src=""><i class="progress"></i><a href="javascript:;" class="preview trash">上传中</a><input type="hidden" name="banner" value=""></div>`);
+               $(ele).before(`<div class="box list"><img src=""><i class="progress"></i><a href="javascript:;" class="preview">上传中</a><input type="hidden" name="banner" value=""></div>`);
                _this.readFile(type,authority,files,$(ele.parentNode.firstElementChild));
                $(ele.parentNode.firstElementChild).append(`<span style="color:#ccc;font-size:0.8em;">预览中</span>`);
                // 修改删除图片
                $('#main').on('click','.trash',function (){
-                  /*_this.$layer.confirm('确定删除这一项？',{btn: ['确定','取消']},function (index){
-                   _this.$layer.close(index);
-                   })*/
-                  _this.delImg($(this));
+                  _this.delImg($(this))
                })
             })
          })
@@ -120,9 +117,9 @@
             this.$http.post('image',form).then(url=>{
                ev.find('input[type=hidden]').val(this.Substr(url.path));
                ev.find('span').remove();
-               ev.find('a.preview').text('修改');
+               ev.find('a.preview').addClass('trash').text('修改');
             })
-         },
+         }
       }
    }
 </script>

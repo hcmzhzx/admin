@@ -18,13 +18,13 @@
                      <option value="0">普通会员</option>
                      <option value="1">经销商</option>
                   </select>
-                  <select name="condition" class="form-control">
+                  <select name="search_type" class="form-control">
                      <option value="phone">手机号码</option>
                      <option value="name">姓名</option>
                      <option value="wechat">微信号</option>
                   </select>
                   <div class="form-group">
-                     <input type="text" name="word" class="form-control">
+                     <input type="text" name="key" class="form-control">
                   </div>
                   <button type="submit" class="form-control btn btn-primary">查询</button>
                </form>
@@ -43,7 +43,6 @@
                   <th>推广人</th>
                   <th>手机号码</th>
                   <th>微信号</th>
-                  <!--<th>登陆密码</th>-->
                   <th title="推广用户付费所得">奖励1</th>
                   <th title="名下经销商推广用户付费所得">奖励2</th>
                   <th>状态</th>
@@ -69,7 +68,7 @@
                      <a href="#" data-type="select" :data-pk="item.id" data-name="type" data-source="[{text:'普通会员',value:0},{text:'经销商',value:1}]" :data-value="item.is_dealer" class="editable editable-click">{{item.type}}</a>
                   </td>
                   <td>
-                     <a href="#" data-type="select" data-name="dealer_id" :data-pa="item.partner.id" :data-value="item.dealer.id" class="editable editable-click">{{item.dealer.name}}</a>
+                     <a href="#" data-type="select" :data-pa="item.id" data-name="dealer_id" :data-value="item.dealer_id" class="editable editable-click">{{item.dealer.name}}</a>
                   </td>
                   <td>
                      <a href="#" data-type="text" :data-pk="item.id" data-name="pid" :data-value="item.parent.id" class="editable editable-click">{{item.parent.name}}</a>
@@ -91,10 +90,10 @@
                   </td>
                   <td>{{item.created_at}}</td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-name="up_time" data-source="" class="editable editable-click editable-empty">{{item.up_time}}</a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="up_time" data-source='[{"text":"更新开通时间","value":"1"},{"text":"取消开通时间","value":"0"}]' class="editable editable-click editable-empty">{{item.up_time}}</a>
                   </td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-source="" class="editable editable-click editable-empty">{{item.lock_time}}</a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-source='[{"text":"1年","value":"1"},{"text":"2年","value":"2"},{"text":"5年","value":"5"},{"text":"10年","value":"10"}]' class="editable editable-click editable-empty">{{item.lock_time}}</a>
                   </td>
                   <td>
                      <a class="btn btn-primary btn-xs editable editable-click" href="#" data-type="text" :data-pk="item.id" data-name="pwd" data-value="" data-original-title="" title="">改密</a>
@@ -121,6 +120,7 @@
 
 <script>
    import crumb from '../header/crumb'
+   import {API_URL} from '../../assets/js/api'
 
    export default {
       components: {
@@ -132,11 +132,11 @@
             userList: [], // 会员列表
             brandsList: [], // 品牌列表
             partnerList: [], // 合作列表
+            sourceList:'',  // 经销商
 
-
+            search:{},  // 搜索
             meta: {},  // 分页列表
-            currentPage: 1,
-
+            currentPage: 1
          }
       },
       created(){
@@ -147,23 +147,13 @@
          });
 
          // 获取品牌列表
-         this.$http.get('brands?sort=1').then(brands=>{
-            this.brandsList = brands.data.map((item)=>{
-               let list = {};
-               list.value = item.id;
-               list.text = `${item.pinyin.substr(0, 1)}.${item.title}`;
-               return list;
-            })
+         this.$store.dispatch('BrandsData').then(res=>{
+            this.brandsList = res
          });
 
          // 获取合作列表
-         this.$http.get('partner?include=brand').then(partner=>{
-             this.partnerList = partner.data.map((item)=>{
-                let list = {};
-                list.value = item.id;
-                list.text = item.name;
-                return list;
-             })
+         this.$store.dispatch('PartnerData').then(res=>{
+            this.partnerList = res
          })
       },
       updated(){
@@ -173,65 +163,67 @@
             emptytext: '--',
             showbuttons: false,
             success: function (res, val) {
-               const ID = this.getAttribute('data-pk');
+               const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
+               form[name] = val;
+               _this.$http.patch(`users/${ID}`,form)
+            }
+         });
+
+         // 经销商
+         $('.table a[data-type="select"][data-name="dealer_id"]').editable({
+            emptytext: '--',
+            showbuttons: false,
+            source: function () {
+               console.log(1);
+            },
+            success: function (res, val) {
+               const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
+               form[name] = val;
+               //_this.$http.patch(`users/${ID}`,form)  users?include=brand,partner,dealer,parent&partner_id=${id}&type=1
+
 
             }
          });
 
-         $('.table a[data-type="select"][data-name="dealer_id"]').editable({
-            emptytext: '--',
-            showbuttons: false,
-            source:function () {
-               let json = [];
-               let bb = _this.$http.get(`users?include=brand,partner,dealer,parent&partner_id=${this.getAttribute('data-pa')}&type=1`).then(res=>{
-                  res.data.map((item)=>{
-                     json.push({text: item.name, value: item.id})
-                  })
-
-                  return json;
-               });
-
-               console.log(bb)
-            }
-         },function(){
-            console.log(1);
-         })
-
          // 编辑框
-         $('.table a[data-type!="select"][data-type]').editable({
+         $('.table a[data-type!="select"]').editable({
             emptytext: '--',
-            success: function (res, value) {
-               const name = this.getAttribute('data-name'), form = {}, ID = this.getAttribute('data-pk');
-               form[name] = value;
-               console.log(form);
+            success: function (res, val) {
+               const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
+               form[name] = val;
+               _this.$http.patch(`users/${ID}`,form)
             }
          })
       },
       methods: {
-         // 经销商
-        /* partner(id){
-            return this.$http.get(`users?include=brand,partner,dealer,parent&partner_id=${id}&type=1`).then(res=>{
-               return JSON.stringify(res.data.map((item)=>{
-                  let json={};
-                  json.text = item.name;
-                  json.value = item.id;
-                  return json;
-               }))
-            })
-         },*/
-
          // 搜索
          sendForm(e){
+            this.currentPage = 1;
             let inputs = e.target.querySelectorAll('select,input'),posts = {};
             inputs.forEach((item)=>{
                 posts[item.getAttribute('name')] = item.value
             });
-            console.log(posts);
+            this.search = posts;
+            this.$http.get(`users?include=brand,partner,dealer,parent&brand_id=${posts.brand_id}&partner_id=${posts.partner_id}&type=${posts.type}&search_type=${posts.search_type}&key=${posts.key}`).then(res=>{
+               this.userList = res.data;
+               this.meta = res.meta.pagination;
+            })
          },
 
          // 分页
          pageChange(val){
-
+            // 判断有无搜索内容
+            if(Object.keys(this.search).length == 0){
+               this.$http.get(`users?include=brand,partner,dealer,parent&page=${val}`).then(res=>{
+                  this.userList = res.data;
+                  this.meta = res.meta.pagination;
+               })
+            } else {
+               this.$http.get(`users?include=brand,partner,dealer,parent&brand_id=${this.search.brand_id}&partner_id=${this.search.partner_id}&type=${this.search.type}&search_type=${this.search.search_type}&key=${this.search.key}&page=${val}`).then(res=>{
+                  this.userList = res.data;
+                  this.meta = res.meta.pagination;
+               })
+            }
          }
       }
    }

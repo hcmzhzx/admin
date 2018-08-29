@@ -18,22 +18,24 @@ class CheckForm {
       var posts = {}
       for (var i = 0; i < inputs.length; i++) {
          var ele = inputs[i], value = ele.value, name = ele.getAttribute('name'), rule = ele.getAttribute('data-rule'), sync = ele.getAttribute('data-sync');
-         // 验证下拉框
-         if(inputs[i].localName == 'select'){
-            var errmsg = ele.getAttribute('data-errmsg');
-            if (value == '0' || value == '') {
-               return error(errmsg)
-            } else {
-               posts[name] = value
-            }
-         }
+         // 是否开启验证
          if (sync) {
-            var ruleReg = this.defaultRule[rule], errmsg = ele.getAttribute('data-errmsg');
-            if (!ruleReg.test(value)) {
-               ele.focus();
-               return error(errmsg)
+            // 判断是否属于下拉框
+            if(inputs[i].localName == 'select'){
+               var errmsg = ele.getAttribute('data-errmsg');
+               if (value == '0' || value == '') {
+                  return error(errmsg)
+               } else {
+                  posts[name] = value
+               }
             } else {
-               posts[name] = value
+               var ruleReg = this.defaultRule[rule], errmsg = ele.getAttribute('data-errmsg');
+               if (!ruleReg.test(value)) {
+                  ele.focus();
+                  return error(errmsg)
+               } else {
+                  posts[name] = value
+               }
             }
          }
       }

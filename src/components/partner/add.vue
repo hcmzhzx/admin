@@ -7,7 +7,7 @@
                <label for="brand_id">所属品牌</label>
                <select name="brand_id" id="brand_id" class="form-control small" data-rule="*" data-errmsg="所属品牌必须选择" data-sync="true">
                   <option value="0">请选择所属品牌</option>
-                  <option v-for="item in select" :key="item.value" :value="item.value" >{{item.text}}</option>
+                  <option v-for="item in brandsList" :key="item.value" :value="item.value" >{{item.text}}</option>
                </select>
             </div>
             <div class="form-group">
@@ -70,7 +70,7 @@
                   </div>
                </div>
             </div>
-            <input type="hidden" class="logo" :value="logo" data-rule="*" data-errmsg="logo图必须填写" data-sync="true">
+            <input type="hidden" name="logo" :value="logo" data-rule="*" data-errmsg="logo图必须填写" data-sync="true">
             <button type="submit" class="btn btn-primary">提交</button>
          </form>
       </div>
@@ -88,19 +88,14 @@
       data(){
          return {
             text: [{txt:'品牌设置', src:'brand_index'}, {txt:'合作名单', src:`partner_index`}, {txt:'添加合作'}],
-            select:[], // 下拉框内容
+            brandsList:[], // 品牌列表
             logo:'' // logo图地址
          }
       },
       created(){
-         // 下拉框选项内容
-         this.$http.get('brands?sort=1').then(selec=>{
-            this.select = selec.data.map((item)=>{
-               let list = {};
-               list.value = item.id;
-               list.text = `${item.pinyin.substr(0, 1)}.${item.title}`;
-               return list
-            })
+         // 获取品牌列表
+         this.$store.dispatch('BrandsData').then(res=>{
+            this.brandsList = res
          })
       },
       updated(){
@@ -156,9 +151,7 @@
                Formdata.forEach((item)=>{
                   Form[item.name] = item.value;
                });
-               console.log(Form);
-
-               /*this.$http.post('partner',Form).then(res=>{
+               this.$http.post('partner',Form).then(res=>{
                   this.$router.go(-1)
                }).catch(err=>{
                   console.log(err);
@@ -166,7 +159,7 @@
                      message: err.errors.fg_domain[0],
                      type: 'warning'
                   })
-               })*/
+               })
             })
          }
       }

@@ -72,15 +72,11 @@
       },
       created(){
          this.ID = this.$route.query.ID;
-         // 请求品牌
-         this.$http.get('partner?include=brand').then(res=>{
-            this.source = res.data.map((item)=>{
-                let json={text:'',value:''};
-                json.text = item.name;
-                json.value = item.id;
-                return json;
-            })
-         });
+
+         // 获取合作列表
+         this.$store.dispatch('PartnerData').then(res=>{
+            this.source = res
+         })
 
          // 请求会员价格列表
          this.$http.get(`partner/member?partner_id=${this.ID}`).then(res=>{

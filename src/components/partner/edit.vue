@@ -7,7 +7,7 @@
                <label for="brand_id">所属品牌</label>
                <select name="brand_id" id="brand_id" class="form-control small" data-rule="*" data-errmsg="所属品牌必须选择" data-sync="true">
                   <option value="0">请选择所属品牌</option>
-                  <option v-for="item in select" :key="item.value" :value="item.value" :selected="item.value == brand_id">{{item.text}}</option>
+                  <option v-for="item in brandsList" :key="item.value" :value="item.value" :selected="item.value == brand_id">{{item.text}}</option>
                </select>
             </div>
             <div class="form-group">
@@ -96,7 +96,7 @@
       data(){
          return {
             text: [{txt:'品牌设置', src:'brand_index'}, {txt:'合作名单', src:`partner_index`}, {txt: '编辑合作'}],
-            select:[],   // 下拉框内容
+            brandsList:[],   // 品牌列表
             brand_id:'', // 品牌id
             ID:'',       // 站点id
             partner:{},   // 合作品牌
@@ -107,14 +107,9 @@
          // 所属品牌id
          this.brand_id = this.$route.query.id;
 
-         // 下拉框选项内容
-         this.$http.get('brands?sort=1').then(selec=>{
-            this.select = selec.data.map((item)=>{
-               let list = {};
-               list.value = item.id;
-               list.text = `${item.pinyin.substr(0, 1)}.${item.title}`;
-               return list
-            })
+         // 获取品牌列表
+         this.$store.dispatch('BrandsData').then(res=>{
+            this.brandsList = res
          });
 
          // 站点id 查看合作

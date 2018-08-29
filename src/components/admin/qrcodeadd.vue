@@ -36,7 +36,7 @@
                <label for="brand_id">所属品牌</label>
                <select name="brand_id" id="brand_id" class="form-control small" data-rule="*" data-errmsg="所属品牌必须选择" data-sync="true">
                   <option value="0">请选择</option>
-                  <option v-for="item in brandList" :key="item.value" :value="item.value">{{item.text}}</option>
+                  <option v-for="item in brandsList" :key="item.value" :value="item.value">{{item.text}}</option>
                </select>
             </div>
             <div class="form-group">
@@ -44,11 +44,12 @@
                <div class="uploader">
                   <div class="lists">
                      <div class="box picker">
-                        <input type="file" accept="image/*" class="upfile" data-type="qrcode" data-authority="qrcode_add" data-rule="*" data-errmsg="二维码必须填写" data-sync="true"><span>点击选择图片</span>
+                        <input type="file" accept="image/*" class="upfile" data-type="qrcode" data-authority="qrcode_add"><span>点击选择图片</span>
                      </div>
                   </div>
                </div>
             </div>
+            <input type="hidden" class="qrcode" :value="qrcode" data-rule="*" data-errmsg="二维码必须填写" data-sync="true">
             <button type="submit" class="btn btn-primary">提交</button>
          </form>
       </div>
@@ -66,19 +67,15 @@
       data(){
          return {
             text: [{txt: '客服二维码', src: 'admin_qrcode'}, {txt: '添加二维码'}],
-            brandList: []  // 品牌列表
+            brandsList: [],  // 品牌列表
+            qrcode:''  // 二维码图地址
          }
       },
       created(){
-         //获取品牌
-         this.$http.get('brands?sort=1').then(selec => {
-            this.brandList = selec.data.map((item) => {
-               let list = {};
-               list.value = item.id;
-               list.text = `${item.pinyin.substr(0, 1)}.${item.title}`;
-               return list
-            })
-         })
+         // 获取品牌列表
+         this.$store.dispatch('BrandsData').then(res=>{
+            this.brandsList = res
+         });
       },
       updated(){
          const _this = this;
@@ -87,12 +84,16 @@
             if(files.length == 0) return;
             const ele = this.parentNode, type = this.getAttribute('data-type'), authority = this.getAttribute('data-authority');
             $(ele).siblings().remove();
-            $(ele).before(`<div class="box list"><img src=""><i class="progress"></i><a href="javascript:;" class="preview trash">上传中</a><input type="hidden" name="${type}" value=""></div>`);
+            $(ele).before(`<div class="box list"><img src=""><i class="progress"></i><a href="javascript:;" class="preview">上传中</a><input type="hidden" name="${type}" value=""></div>`);
             _this.readFile(type,files,authority,$(ele.parentNode.firstChild));
             $(ele.parentNode.firstChild).append(`<span style="color:#ccc;font-size:0.8em;">预览中</span>`);
             // 修改删除图片
             $('#main').on('click','.trash',function (){
-               _this.delImg($(this));
+               _this.delImg($(this),()=>{
+                  if($(this).parent().children('input').attr('name') == 'qrcode'){
+                     _this.qrcode=''
+                  }
+               })
             })
          })
       },
@@ -105,9 +106,10 @@
             form.append('authority',authority);
             ev.find('img').attr('src',window.URL.createObjectURL(files));
             this.$http.post('image',form).then(url=>{
+               if(type=='qrcode'){this.qrcode = url.path};
                ev.find('input[type=hidden]').val(url.path);
                ev.find('span').remove();
-               ev.find('a.preview').text('修改');
+               ev.find('a.preview').addClass('trash').text('修改');
             })
          },
 
@@ -126,7 +128,8 @@
                Formdata.forEach((item)=>{
                   Form[item.name] = item.value;
                });
-               this.$http.post('admin_qrcode',Form).then(res=>{
+               console.log(Form);
+               /*this.$http.post('admin_qrcode',Form).then(res=>{
                   this.$router.go(-1)
                }).catch(err=>{
                   console.log(err);
@@ -134,8 +137,7 @@
                      message: err,
                      type: 'warning'
                   })
-               })
-
+               })*/
             })
          }
       }

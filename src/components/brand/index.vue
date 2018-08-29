@@ -132,6 +132,7 @@
 
          // 搜索
          sendForm(e){
+            //this.currentPage = 1;
             let inputs = e.target.querySelectorAll('input,textarea,select'),posts = {};
             inputs.forEach((item)=>{
                posts[item.getAttribute('name')] = item.value

@@ -8,25 +8,34 @@ import admin_qrcode from '@/components/admin/qrcode'
 import admin_qrcodeadd from '@/components/admin/qrcodeadd'
 
 import brand_index from '@/components/brand/index'
-import brand_add from '@/components/brand/add'
+// import brand_add from '@/components/brand/add'
 import brand_edit from '@/components/brand/edit'
 
 import partner_index from '@/components/partner/index'
-import partner_add from '@/components/partner/add'
+// import partner_add from '@/components/partner/add'
 import partner_edit from '@/components/partner/edit'
 import partner_user from '@/components/partner/user'
 import partner_wechat from '@/components/partner/wechat'
 import partner_payment from '@/components/partner/payment'
 import partner_paymentadd from '@/components/partner/paymentadd'
 
+import goods_index from '@/components/goods/index'
+import goods_add from '@/components/goods/add'
 import goods_category from '@/components/goods/category'
 import goods_cateadd from '@/components/goods/cateadd'
 
 import template_index from '@/components/template/index'
-import template_add from '@/components/template/add'
+// import template_add from '@/components/template/add'
 import template_edit from '@/components/template/edit'
 
 import user_index from '@/components/user/index'
+import user_order from '@/components/user/order'
+
+import service_beginsales from '@/components/service/beginsales'
+import service_beginsale from '@/components/service/beginsale'
+import service_search from '@/components/service/search'
+import service_aftersales from '@/components/service/aftersales'
+import service_aftersale from '@/components/service/aftersale'
 
 
 
@@ -69,11 +78,11 @@ export default new Router({
                name: 'brand_index',
                component: brand_index
             },
-            {
+            /*{
                path: 'brand/add',
                name: 'brand_add',
                component: brand_add
-            },
+            },*/
             {
                path: 'brand/edit',
                name: 'brand_edit',
@@ -84,11 +93,11 @@ export default new Router({
                name: 'partner_index',
                component: partner_index
             },
-            {
+            /*{
                path: 'partner/add',
                name: 'partner_add',
                component: partner_add
-            },
+            },*/
             {
                path: 'partner/edit',
                name: 'partner_edit',
@@ -115,6 +124,16 @@ export default new Router({
                component: partner_paymentadd
             },
             {
+               path: 'goods/index',
+               name: 'goods_index',
+               component: goods_index
+            },
+            {
+               path: 'goods/add',
+               name: 'goods_add',
+               component: goods_add
+            },
+            {
                path: 'goods/category',
                name: 'goods_category',
                component: goods_category
@@ -129,11 +148,11 @@ export default new Router({
                name: 'template_index',
                component: template_index
             },
-            {
+            /*{
                path: 'template/add',
                name: 'template_add',
                component: template_add
-            },
+            },*/
             {
                path: 'template/edit',
                name: 'template_edit',
@@ -144,6 +163,37 @@ export default new Router({
                name: 'user_index',
                component: user_index
             },
+            {
+               path: 'user/order',
+               name: 'user_order',
+               component: user_order
+            },
+            {
+               path: 'service/beginsales',
+               name: 'service_beginsales',
+               component: service_beginsales
+            },
+            {
+               path: 'service/beginsale',
+               name: 'service_beginsale',
+               component: service_beginsale
+            },
+            {
+               path: 'service/search',
+               name: 'service_search',
+               component: service_search
+            },
+            {
+               path: 'service/aftersales',
+               name: 'service_aftersales',
+               component: service_aftersales
+            },
+            {
+               path: 'service/aftersale',
+               name: 'service_aftersale',
+               component: service_aftersale
+            },
+
 
 
 

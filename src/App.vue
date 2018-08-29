@@ -21,10 +21,10 @@
    *{margin:0;padding:0;box-sizing:border-box;font:inherit;vertical-align:baseline}
    body{font:1.1em '\5FAE\8F6F\96C5\9ED1',Arial,'\9ED1\4F53','\5B8B\4F53'}
    table{border-collapse:collapse}
-   input{font-family:'\5FAE\8F6F\96C5\9ED1','\9ED1\4F53','\5B8B\4F53';-webkit-appearance:none}
-   button,input,select,textarea{font:inherit;outline:0;border:0;border-radius:0;-webkit-tap-highlight-color:transparent;background:0 0;line-height:normal;-webkit-writing-mode:horizontal-tb;resize:none;color:inherit;white-space:pre-wrap;word-wrap:break-word;-webkit-rtl-ordering:logical;user-select:text}
-   input::-webkit-inner-spin-button,input::-webkit-outer-spin-button{-webkit-appearance:none!important}
+   input{font-family:'\5FAE\8F6F\96C5\9ED1','\9ED1\4F53','\5B8B\4F53';}
+   button,input,select,textarea{font:inherit;outline:0;border:0;border-radius:0;-webkit-tap-highlight-color:transparent;background:0 0;line-height:normal;-webkit-writing-mode:horizontal-tb;resize:none;color:inherit;white-space:pre-wrap;word-wrap:break-word;-webkit-rtl-ordering:logical;}
    input[type=file]{position:absolute;top:0;left:0;bottom:0;right:0;opacity:0}
+   input[type=checkbox]{-webkit-appearance:checkbox;}
    .fitimg{width:100%;height:100%;}
 
    .flex{display:flex;flex-direction:row;}
@@ -61,7 +61,7 @@
    #main .crumb{width:100%;height:40px;padding:10px;border:1px solid #ccc;background:#F9F9F9;margin-left:-1px}
    /*#main .crumb i{margin-right:10px}*/
    #main .crumb a:after{content:'>';display:inline-block;color:#aaa;margin:0 5px}
-   #main header{margin-bottom:.5em}
+   #main header{margin:.4em 0;}
    #main footer .page{float:right}
    #main .content{padding:.5em;height:100%}
    #main form.post{margin-bottom:50px;}
@@ -82,6 +82,7 @@
    .uploader .picker{border-style:dashed}
    .uploader input.upfile{opacity:0;position:absolute;top:0;left:0;padding:0;width:100%;height:100%;opacity:0;z-index:9;cursor:pointer}
 
+   #edui1_iframeholder{height:400px !important;}
 
    /*Element-ui*/
    .el-icon-loading:before{font-size:26px}

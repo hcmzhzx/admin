@@ -64,7 +64,7 @@
                      <a href="#" data-type="select" :data-pk="item.id" data-name="admin_id" data-value="35" class="editable editable-click"></a>
                   </td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandList)" :data-value="item.brand.id" class="editable editable-click">{{source(item.brand.title)}}</a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click">{{source(item.brand.title)}}</a>
                   </td>
                   <td>{{item.create_time}}</td>
                   <td>
@@ -102,7 +102,7 @@
          return {
             text: [{txt: '客服二维码'}],
             qrcodeData: [], // 二维码列表
-            brandList:[],   // 品牌列表
+            brandsList:[],   // 品牌列表
 
             meta:{},  // 分页列表
             currentPage: 1,
@@ -117,14 +117,9 @@
             //console.log(res);
          });
 
-         //获取品牌
-         this.$http.get('brands?sort=1').then(selec=>{
-            this.brandList = selec.data.map((item)=>{
-               let list = {};
-               list.value = item.id;
-               list.text = `${item.pinyin.substr(0, 1)}.${item.title}`;
-               return list
-            })
+         // 获取品牌列表
+         this.$store.dispatch('BrandsData').then(res=>{
+            this.brandsList = res
          });
 
          // 获取二维码列表
