@@ -55,8 +55,8 @@
          }
       },
       created(){
+         const id = this.ID = this.$route.query.id, _this = this;
          this.$nextTick(()=> {
-            const id = this.ID = this.$route.query.id, _this = this;
             // 初始化编辑器
             $.ajax({url:'/static/ueditor/ueditor.all.js',dataType:'script',cache:true,success:function (){
                _this.UE = UE.getEditor('editor',{enableAutoSave:false,autoHeightEnabled:false});
@@ -86,7 +86,7 @@
       methods: {
          sendForm(e){
             new CheckForm(e,err=>{
-               this.$message({    // 此处搞不懂为什么不能使用 layer
+               this.$message({
                   message: err,
                   type: 'warning'
                });

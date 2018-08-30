@@ -74,8 +74,8 @@
                   </td>
                   <td>{{item.create_time}}</td>
                   <td>
-                     <a href="javascript:;" class="btn btn-primary btn-xs ajax-call" title="编辑商品"><i class="glyphicon glyphicon-pencil"></i></a>
-                     <button class="btn btn-danger btn-xs del" :data-pk="item.id"><i class="glyphicon glyphicon-trash"></i></button>
+                     <a href="javascript:;" class="btn btn-primary btn-xs ajax-call" @click="$router.push({name:'goods_edit',query:{id:item.id}})" title="编辑商品"><i class="glyphicon glyphicon-pencil"></i></a>
+                     <button class="btn btn-danger btn-xs del" @click="del(item.id)" :data-pk="item.id"><i class="glyphicon glyphicon-trash"></i></button>
                   </td>
                </tr>
                </tbody>
@@ -128,17 +128,6 @@
       },
       updated(){
          const _this = this;
-         // 下拉框
-         $('.table a[data-type="select"][data-name!="cid"]').editable({
-            emptytext: '--',
-            showbuttons: false,
-            success: function (res, val) {
-               const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
-               form[name] = val;
-               _this.$http.patch(`product/${ID}`,form)
-            }
-         });
-
          // 商品分类
          $('.table a[data-type="select"][data-name="cid"]').editable({
             emptytext: '--',
@@ -158,6 +147,17 @@
                   return json;
                }))
             },
+            success: function (res, val) {
+               const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
+               form[name] = val;
+               _this.$http.patch(`product/${ID}`,form)
+            }
+         });
+
+         // 下拉框
+         $('.table a[data-type="select"][data-name!="cid"]').editable({
+            emptytext: '--',
+            showbuttons: false,
             success: function (res, val) {
                const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
                form[name] = val;
@@ -203,6 +203,23 @@
                   this.meta = res.meta.pagination;
                })
             }
+         },
+
+         // 删除商品
+         del(id){
+            this.$confirm(`确定删除此记录?`, {
+               confirmButtonText: '确定',
+               cancelButtonText: '取消',
+               type: 'warning'
+            }).then(() => {
+               this.$http.delete(`product/${id}`).then(()=>{
+                  this.goodsList = this.goodsList.filter((item)=>{return item.id != id})
+               })
+               this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+               })
+            }).catch(()=>{});
          }
       }
    }

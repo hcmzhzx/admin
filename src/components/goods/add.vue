@@ -13,7 +13,7 @@
             </div>
             <div class="form-group">
                <label for="price">价格</label>
-               <input type="text" class="form-control small" name="price" id="price">
+               <input type="text" class="form-control small" name="price" id="price" data-rule="*" data-errmsg="价格必须填写" data-sync="true">
             </div>
             <div class="form-group">
                <label for="pv">积分</label>
@@ -50,7 +50,7 @@
                <label><input type="checkbox" name="type[]" value="1">推荐</label>
                <label><input type="checkbox" name="type[]" value="2">热门</label>
             </div>
-            <input type="hidden" name="cover" :value="cover" data-rule="*" data-errmsg="缩略图必须上传" data-sync="true">
+            <input type="hidden" :value="cover" data-rule="*" data-errmsg="缩略图必须上传" data-sync="true">
             <button type="submit" class="btn btn-primary">提交</button>
          </form>
       </div>
@@ -89,7 +89,7 @@
                if(files.length == 0) return;
                const ele = this.parentNode, type = this.getAttribute('data-type'), authority = this.getAttribute('data-authority');
                $(ele).siblings().remove();
-               $(ele).before(`<div class="box list"><img src=""><i class="progress"></i><a href="javascript:;" class="preview">上传中</a></div>`);
+               $(ele).before(`<div class="box list"><img src=""><i class="progress"></i><a href="javascript:;" class="preview">上传中</a><input type="hidden" name="cover" value=""></div>`);
                _this.readFile(type,files,authority,$(ele.parentNode.firstChild));
                $(ele.parentNode.firstChild).append(`<span style="color:#ccc;font-size:0.8em;">预览中</span>`);
                // 修改删除图片
@@ -124,6 +124,7 @@
             ev.find('img').attr('src',window.URL.createObjectURL(files));
             this.$http.post('image',form).then(url=>{
                this.cover = url.path;
+               ev.find('input[type=hidden]').val(url.path);
                ev.find('span').remove();
                ev.find('a.preview').addClass('trash').text('修改');
             })
@@ -132,25 +133,23 @@
          // 表单验证提交
          sendForm(e){
             new CheckForm(e,err=>{
-               this.$message({    // 此处搞不懂为什么不能使用 layer
+               this.$message({
                   message: err,
                   type: 'warning'
                });
             },()=>{
                let form = new FormData();
                const Formdata = $(e.path[0]).serializeArray().filter((item)=>{
-                  return item.value !== '';
+                  return item.value !== '' && item.name != 'editorValue';
                });
                Formdata.forEach((item)=>{
-                  form.append(item.name,item.value); // 介绍内容
+                  form.append(item.name,item.value); // 添加其他项
                });
                if(UE.getEditor('editor').getContent()){
-                  form.append('intro',UE.getEditor('editor').getContent()); // 介绍内容
+                  form.append('content',UE.getEditor('editor').getContent()); // 介绍内容
                }
-
                this.$http.post('product',form).then(res=>{
-                  console.log(res);
-                  //this.$router.go(-1)
+                  this.$router.go(-1)
                }).catch(err=>{
                   console.log(err);
                   this.$message({
@@ -158,7 +157,6 @@
                      type: 'warning'
                   })
                })
-
             })
          },
       }

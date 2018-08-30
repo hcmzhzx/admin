@@ -93,7 +93,7 @@
                </thead>
                <tbody>
                <tr v-for="item in beginsaleList" :key="item.id">
-                  <td><input type="checkbox" name="ids[]" :value="item.id" v-if="!item.begin.user_id"><span v-else>--</span></td>
+                  <td><input type="checkbox" name="ids[]" :value="item.id"></td>
                   <td>
                      <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click"></a>
                   </td>
@@ -112,7 +112,7 @@
                   <td>{{item.created_at}}</td>
                   <td>{{item.begin.service_time}}</td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-name="admin_id" data-source="" :data-value="item.begin.admin_id" class="editable editable-click editable-empty">--</a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="admin_id" :data-source="JSON.stringify(their(beginList))" :data-value="item.begin.admin_id" class="editable editable-click editable-empty"></a>
                   </td>
                   <td>{{item.begin.comment}}</td>
                </tr>
@@ -155,7 +155,6 @@
             brandsList: [], // 品牌列表
             beginList:[],  // 售前客服列表
 
-
             search:{},  // 搜索
             meta: {},  // 分页列表
             currentPage: 1
@@ -181,7 +180,7 @@
       updated(){
          const _this = this;
          // 下拉框
-         $('.table a[data-type="select"][data-name!="dealer_id"]').editable({
+         $('.table a[data-type="select"][data-name!="admin_id"]').editable({
             emptytext: '--',
             showbuttons: false,
             success: function (res, val) {
@@ -192,12 +191,27 @@
          });
 
          // 编辑框
-         $('.table a[data-type!="select"][data-type]').editable({
+         $('.table a[data-type!="select"]').editable({
             emptytext: '--',
             success: function (res, val) {
                const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
                form[name] = val;
                _this.$http.patch(`users/${ID}`,form)
+            }
+         });
+
+         // 所属员工
+         $('.table a[data-type="select"][data-name="admin_id"]').editable({
+            emptytext: '--',
+            showbuttons: false,
+            success: function (res, val) {
+               const ID = this.getAttribute('data-pk'), users=[ID];
+               _this.$http.post('begin_sale/distribution',{admin_id:val,users}).then(res=>{
+                  _this.$message({
+                     type: 'success',
+                     message: res.message
+                  });
+               })
             }
          });
 
@@ -207,6 +221,16 @@
          });
       },
       methods:{
+         // 所属员工
+         their(data){
+            return data.map((item)=>{
+                let json={};
+                json.text = item.username;
+                json.value = item.id;
+                return json
+            })
+         },
+
          // 搜索
          sendForm1(e){
             this.currentPage = 1; // 重置分页
@@ -239,7 +263,7 @@
                   this.$message({
                      type: 'success',
                      message: res.message
-                  });
+                  })
                })
             }
          },

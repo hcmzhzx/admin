@@ -68,7 +68,7 @@
                </thead>
                <tbody>
                <tr v-for="item in searchList" :key="item.id">
-                  <td><input type="checkbox" name="ids[]" :value="item.id" v-if="!item.after.user_id"><span v-else>--</span></td>
+                  <td><input type="checkbox" name="ids[]" :value="item.id"></td>
                   <td>
                      <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click"></a>
                   </td>

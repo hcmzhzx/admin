@@ -68,7 +68,7 @@
                      <a href="#" data-type="select" :data-pk="item.id" data-name="type" data-source="[{text:'普通会员',value:0},{text:'经销商',value:1}]" :data-value="item.is_dealer" class="editable editable-click">{{item.type}}</a>
                   </td>
                   <td>
-                     <a href="#" data-type="select" :data-pa="item.id" data-name="dealer_id" :data-value="item.dealer_id" class="editable editable-click">{{item.dealer.name}}</a>
+                     <a href="#" data-type="select" :data-pk="item.partner.id" data-name="dealer_id" :data-value="item.dealer_id" class="editable editable-click">{{item.dealer.name}}</a>
                   </td>
                   <td>
                      <a href="#" data-type="text" :data-pk="item.id" data-name="pid" :data-value="item.parent.id" class="editable editable-click">{{item.parent.name}}</a>
@@ -132,7 +132,6 @@
             userList: [], // 会员列表
             brandsList: [], // 品牌列表
             partnerList: [], // 合作列表
-            sourceList:'',  // 经销商
 
             search:{},  // 搜索
             meta: {},  // 分页列表
@@ -158,6 +157,33 @@
       },
       updated(){
          const _this = this;
+         // 经销商
+         /*$('.table a[data-type="select"][data-name="dealer_id"]').editable({
+            emptytext: '--',
+            showbuttons: false,
+            source: function () {
+               console.log(2);
+               let json = $.ajax({
+                  type:'get',
+                  async:false,
+                  headers:{'Authorization':localStorage.getItem('access_token')},
+                  url:`${API_URL}/admin/users?include=brand,partner,dealer,parent&partner_id=${this.getAttribute('data-pk')}&type=1`,
+                  success:function(data){return data}
+               });
+               return JSON.stringify(json.responseJSON.data.map((item)=>{
+                  let json={};
+                  json.text = item.name;
+                  json.value = item.id;
+                  return json;
+               }))
+            },
+            success: function (res, val) {
+               const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
+               form[name] = val;
+               //_this.$http.patch(`users/${ID}`,form)  users?include=brand,partner,dealer,parent&partner_id=${id}&type=1
+            }
+         });*/
+
          // 下拉框
          $('.table a[data-type="select"][data-name!="dealer_id"]').editable({
             emptytext: '--',
@@ -166,22 +192,6 @@
                const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
                form[name] = val;
                _this.$http.patch(`users/${ID}`,form)
-            }
-         });
-
-         // 经销商
-         $('.table a[data-type="select"][data-name="dealer_id"]').editable({
-            emptytext: '--',
-            showbuttons: false,
-            source: function () {
-               console.log(1);
-            },
-            success: function (res, val) {
-               const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
-               form[name] = val;
-               //_this.$http.patch(`users/${ID}`,form)  users?include=brand,partner,dealer,parent&partner_id=${id}&type=1
-
-
             }
          });
 

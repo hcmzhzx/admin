@@ -78,7 +78,7 @@
                   </div>
                </div>
             </div>
-            <input type="hidden" class="logo" :value="logo || Substr(partner.logo)" data-rule="*" data-errmsg="logo图必须填写" data-sync="true">
+            <input type="hidden" class="logo" :value="logo" data-rule="*" data-errmsg="logo图必须填写" data-sync="true">
             <button type="submit" class="btn btn-primary">提交</button>
          </form>
       </div>
@@ -115,7 +115,8 @@
          // 站点id 查看合作
          const ID = this.ID = this.$route.query.ID;
          this.$http.get(`partner/${ID}`).then(partner=>{
-            this.partner = partner
+            this.partner = partner;
+            this.cover = this.Substr(partner.logo);
          })
       },
       updated(){
@@ -133,7 +134,7 @@
             $('#main').on('click','.trash',function (){
                _this.delImg($(this),()=>{
                   if($(this).parent().children('input').attr('name') == 'logo'){
-                     $('input.logo').val('')
+                    _this.logo = ''
                   }
                })
             })
