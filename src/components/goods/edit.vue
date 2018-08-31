@@ -5,7 +5,7 @@
          <form class="post" @submit.prevent="sendForm">
             <div class="form-group">
                <label for="title">商品标题</label>
-               <input type="text" class="form-control small" name="title" v-model.trim="goodsList.title" id="title" data-rule="*" data-errmsg="商品标题必须填写" data-sync="true">
+               <input type="text" class="form-control small" name="title" v-model.trim="goodsList.title" id="title" data-rule="*" data-errmsg="商品标题必须填写" data-syn="true">
             </div>
             <div class="form-group">
                <label for="spec">规格</label>
@@ -21,15 +21,16 @@
             </div>
             <div class="form-group">
                <label for="brand_id">所属品牌</label>
+               <!--这里有问题-->
                <select name="brand_id" id="brand_id" @change="sort" class="form-control small" data-rule="*" data-errmsg="所属品牌必须选择" data-sync="true">
                   <option value="">请选择所属品牌</option>
-                  <option v-for="item in brandsList" :key="item.value" :value="item.value" :selected="item.value == goodsList.brand.id">{{item.text}}</option>
+                  <option v-for="item in brandsList" :key="item.value" :value="item.value" :selected="item.value==goodsList.brand.id">{{item.text}}</option>
                </select>
             </div>
             <div class="form-group">
                <label for="cid">商品分类</label>
                <select name="cid" id="cid" class="form-control small">
-                  <option v-for="item in sortList" :key="item.value" :value="item.value" :selected="item.value == goodsList.category.id">{{item.text}}</option>
+                  <option v-for="data in sortList" :key="data.value" :value="data.value" :selected="data.value == goodsList.category.id">{{data.text}}</option>
                </select>
             </div>
             <div class="form-group">
@@ -77,26 +78,27 @@
             brandsList: [], // 品牌列表
             sortList:[],    // 分类列表
             cover:'',      // 缩略图
-            checkeds:[],   // 记录复选框长度
+            checkeds:[]   // 记录复选框长度
          }
       },
       created(){
-         const ID = this.id = this.$route.query.id, _this = this;
+         let ID = this.id = this.$route.query.id, _this = this;
          // 获取商品数据
          this.$http.get(`product/${ID}?include=brand,category`).then(goods=>{
             this.goodsList = goods;
             this.cover = this.Substr(goods.cover);
-
+            return goods
+         }).then(data=>{
             // 预先请求品牌
-            this.$http.get(`product_category_list/${goods.brand.id}?include=brand`).then(product=>{
+            this.$http.get(`product_category_list/${data.brand.id}?include=brand`).then(product=>{
                this.sortList = product.data.map((item)=>{
                   let json={};
                   json.text = item.title;
                   json.value = item.id;
                   return json;
                })
-            })
-         });
+            });
+         })
 
          // 获取品牌列表
          this.$store.dispatch('BrandsData').then(brand=>{
@@ -168,7 +170,7 @@
                   type: 'warning'
                });
             },()=>{
-               let form = new FormData(); this.checkeds = [];
+               let form = {}; this.checkeds = [];
                const Formdata = $(e.path[0]).serializeArray().filter((item)=>{
                   return item.value !== '' && item.name != 'editorValue';
                });
@@ -176,24 +178,23 @@
                   // 判断复选框值
                   if(item.name == 'type'){
                      if(item.value==1){
-                        form.append('type',item.value); // 添加复选值
+                        form.type=item.value; // 添加复选值
                      } else {
-                        form.append('type',item.value); // 添加复选值
+                        form.type=item.value; // 添加复选值
                      }
                      this.checkeds.push(item.value)
                   } else {
-                     form.append(item.name,item.value); // 添加其他项
+                     form[item.name]=item.value; // 添加其他项
                   }
                });
                // 判断长度是否全选
                if(this.checkeds.length==2){
-                  form.delete('type');
-                  form.append('type',3); // 添加复选值
+                  form.type=3
                }
                if(UE.getEditor('editor').getContent()){
-                  form.append('content',UE.getEditor('editor').getContent()); // 介绍内容
+                  form.content=UE.getEditor('editor').getContent(); // 介绍内容
                }
-               this.$http.post(`product/${this.id}`,form).then(res=>{
+               this.$http.patch(`product/${this.id}`,form).then(res=>{
                   this.$router.go(-1)
                }).catch(err=>{
                   console.log(err);

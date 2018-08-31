@@ -69,11 +69,11 @@
 
             // 上传图片
             $('.picker input[type=file]').change(function(e){
-               const files = e.target.files[0];
-               if(files.length == 0) return;
+               if(this.files.length == 0) return;
+               const files = this.files[0];
                const ele = this.parentNode, type = ele.getAttribute('data-type'), authority = ele.getAttribute('data-authority');
                $(ele).siblings().remove();
-               $(ele).before(`<div class="box list"><img src=""><i class="progress"></i><a href="javascript:;" class="preview">上传中</a><input type="hidden" name="banner" value=""></div>`);
+               $(ele).before(`<div class="box list"><img src="${window.URL.createObjectURL(files)}"><i class="progress"></i><a href="javascript:;" class="preview">上传中</a><input type="hidden" name="banner" value=""></div>`);
                _this.readFile(type,authority,files,$(ele.parentNode.firstElementChild));
                $(ele.parentNode.firstElementChild).append(`<span style="color:#ccc;font-size:0.8em;">预览中</span>`);
                // 修改删除图片
@@ -98,7 +98,7 @@
                }).forEach((item)=>{
                   json[item.name] = item.value;
                });
-               // 获得编辑器内容及首拼
+               // 获得编辑器内容 及 首拼
                const contact = this.UE.getContent(), py = this.PY(e.target.querySelector('#title').value);
 
                // 发送修改请求
@@ -113,7 +113,6 @@
             form.append('type',type);
             form.append('image',files);
             form.append('authority',authority);
-            ev.find('img').attr('src',window.URL.createObjectURL(files));
             this.$http.post('image',form).then(url=>{
                ev.find('input[type=hidden]').val(this.Substr(url.path));
                ev.find('span').remove();

@@ -37,6 +37,8 @@ class CheckForm {
                   posts[name] = value
                }
             }
+         } else {
+            posts[name] = value
          }
       }
       return callback(posts)

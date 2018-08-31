@@ -48,12 +48,12 @@
             this.getUE();
 
             $('.picker input[type=file]').change(function(e){
-               const files = e.target.files[0];
-               if(files.length == 0) return;
+               if(this.files.length == 0) return;
+               const files = this.files[0];
                const ele = this.parentNode, type = ele.getAttribute('data-type'), authority = ele.getAttribute('data-authority');
                $(ele).siblings().remove();
-               $(ele).before(`<div class="box list"><img src=""><i class="progress"></i><a href="javascript:;" class="preview">上传中</a><input type="hidden" name="banner" value=""></div>`);
-               _this.readFile(type,files,authority,$(ele.parentNode.firstChild));
+               $(ele).before(`<div class="box list"><img src="${window.URL.createObjectURL(files)}"><i class="progress"></i><a href="javascript:;" class="preview">上传中</a><input type="hidden" name="banner" value=""></div>`);
+               _this.readFile(type,files,authority,$(ele.parentNode.firstElementChild));
                $(ele.parentNode.firstChild).append(`<span style="color:#ccc;font-size:0.8em;">预览中</span>`);
                // 修改删除图片
                $('#main').on('click','.trash',function (){
@@ -91,7 +91,6 @@
             form.append('type',type);
             form.append('image',files);
             form.append('authority',authority);
-            ev.find('img').attr('src',window.URL.createObjectURL(files));
             this.$http.post('image',form).then(url=>{
                ev.find('input[type=hidden]').val(this.Substr(url.path));
                ev.find('span').remove();

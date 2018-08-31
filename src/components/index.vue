@@ -70,8 +70,8 @@
                   <i class="glyphicon glyphicon-list-alt"></i>文章管理<i class="glyphicon glyphicon-menu-down"></i>
                </a>
                <ul id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                  <li><a href="javascript:;" data-url="/news/category.html" title="文章分类" class="ajax-call">文章分类</a></li>
-                  <li><a href="javascript:;" data-url="/news/index.html" title="文章列表" class="ajax-call">文章列表</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'news_category'})" title="文章分类" class="ajax-call">文章分类</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'news_index'})" data-url="/news/index.html" title="文章列表" class="ajax-call">文章列表</a></li>
                </ul>
             </li>
             <li class="panel">

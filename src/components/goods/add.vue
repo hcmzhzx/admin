@@ -47,8 +47,8 @@
                <div id="editor" style="width:900px;height:400px;"></div>
             </div>
             <div class="form-group">
-               <label><input type="checkbox" name="type[]" value="1">推荐</label>
-               <label><input type="checkbox" name="type[]" value="2">热门</label>
+               <label><input type="checkbox" name="type" value="1">推荐</label>
+               <label><input type="checkbox" name="type" value="2">热门</label>
             </div>
             <input type="hidden" :value="cover" data-rule="*" data-errmsg="缩略图必须上传" data-sync="true">
             <button type="submit" class="btn btn-primary">提交</button>
@@ -70,7 +70,8 @@
             text: [{txt:'商品列表', src:'goods_index'}, {txt:'添加商品'}],
             brandsList: [], // 品牌列表
             sortList:[],    // 分类列表
-            cover:''      // 缩略图
+            cover:'',      // 缩略图
+            checkeds:[]   // 记录复选框长度
          }
       },
       created(){
@@ -85,12 +86,12 @@
             this.getUE();
             // 上传图片
             $('.picker input[type=file]').change(function(){
+               if(this.files.length == 0) return;
                const files = this.files[0];
-               if(files.length == 0) return;
                const ele = this.parentNode, type = this.getAttribute('data-type'), authority = this.getAttribute('data-authority');
                $(ele).siblings().remove();
-               $(ele).before(`<div class="box list"><img src=""><i class="progress"></i><a href="javascript:;" class="preview">上传中</a><input type="hidden" name="cover" value=""></div>`);
-               _this.readFile(type,files,authority,$(ele.parentNode.firstChild));
+               $(ele).before(`<div class="box list"><img src="${window.URL.createObjectURL(files)}"><i class="progress"></i><a href="javascript:;" class="preview">上传中</a><input type="hidden" name="cover" value=""></div>`);
+               _this.readFile(type,files,authority,$(ele.parentNode.firstElementChild));
                $(ele.parentNode.firstChild).append(`<span style="color:#ccc;font-size:0.8em;">预览中</span>`);
                // 修改删除图片
                $('#main').on('click','.trash',function (){
@@ -121,7 +122,6 @@
             form.append('type',type);
             form.append('image',files);
             form.append('authority',authority);
-            ev.find('img').attr('src',window.URL.createObjectURL(files));
             this.$http.post('image',form).then(url=>{
                this.cover = url.path;
                ev.find('input[type=hidden]').val(url.path);
@@ -138,15 +138,29 @@
                   type: 'warning'
                });
             },()=>{
-               let form = new FormData();
+               let form = {}; this.checkeds = [];
                const Formdata = $(e.path[0]).serializeArray().filter((item)=>{
                   return item.value !== '' && item.name != 'editorValue';
                });
                Formdata.forEach((item)=>{
-                  form.append(item.name,item.value); // 添加其他项
+                  // 判断复选框值
+                  if(item.name == 'type'){
+                     if(item.value==1){
+                        form.type=item.value; // 添加复选值
+                     } else {
+                        form.type=item.value; // 添加复选值
+                     }
+                     this.checkeds.push(item.value)
+                  } else {
+                     form[item.name]=item.value; // 添加其他项
+                  }
                });
+               // 判断长度是否全选
+               if(this.checkeds.length==2){
+                  form.type=3
+               }
                if(UE.getEditor('editor').getContent()){
-                  form.append('content',UE.getEditor('editor').getContent()); // 介绍内容
+                  form.content=UE.getEditor('editor').getContent(); // 介绍内容
                }
                this.$http.post('product',form).then(res=>{
                   this.$router.go(-1)

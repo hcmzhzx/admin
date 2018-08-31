@@ -38,6 +38,12 @@ import service_search from '@/components/service/search'
 import service_aftersales from '@/components/service/aftersales'
 import service_aftersale from '@/components/service/aftersale'
 
+import news_index from '@/components/news/index'
+import news_add from '@/components/news/add'
+import news_edit from '@/components/news/edit'
+import news_category from '@/components/news/category'
+import news_cateadd from '@/components/news/cateadd'
+
 
 
 Vue.use(Router)
@@ -199,8 +205,31 @@ export default new Router({
                name: 'service_aftersale',
                component: service_aftersale
             },
-
-
+            {
+               path: 'news/index',
+               name: 'news_index',
+               component: news_index
+            },
+            {
+               path: 'news/add',
+               name: 'news_add',
+               component: news_add
+            },
+            {
+               path: 'news/edit',
+               name: 'news_edit',
+               component: news_edit
+            },
+            {
+               path: 'news/category',
+               name: 'news_category',
+               component: news_category
+            },
+            {
+               path: 'news/cateadd',
+               name: 'news_cateadd',
+               component: news_cateadd
+            },
 
 
 
