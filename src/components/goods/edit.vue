@@ -22,15 +22,15 @@
             <div class="form-group">
                <label for="brand_id">所属品牌</label>
                <!--这里有问题-->
-               <select name="brand_id" id="brand_id" @change="sort" class="form-control small" data-rule="*" data-errmsg="所属品牌必须选择" data-sync="true">
+               <select name="brand_id" @change="sort" id="brand_id" class="form-control small" v-model="goodsList.brand_id" data-rule="*" data-errmsg="所属品牌必须选择" data-sync="true">
                   <option value="">请选择所属品牌</option>
-                  <option v-for="item in brandsList" :key="item.value" :value="item.value" :selected="item.value==goodsList.brand.id">{{item.text}}</option>
+                  <option v-for="item in brandsList" :key="item.value" :value="item.value">{{item.text}}</option>
                </select>
             </div>
             <div class="form-group">
                <label for="cid">商品分类</label>
                <select name="cid" id="cid" class="form-control small">
-                  <option v-for="data in sortList" :key="data.value" :value="data.value" :selected="data.value == goodsList.category.id">{{data.text}}</option>
+                  <option v-for="data in sortList" :key="data.value" :value="data.value" :selected="data.value==goodsList.category_id">{{data.text}}</option>
                </select>
             </div>
             <div class="form-group">

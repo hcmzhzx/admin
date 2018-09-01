@@ -1,7 +1,7 @@
 <template>
    <div class="flexitemv">
       <crumb :content="text"></crumb>
-      <div class="content" style="">
+      <div class="content">
          <form class="post" @submit.prevent="sendForm">
             <div class="form-group">
                <label for="title">文章标题</label>
@@ -9,14 +9,14 @@
             </div>
             <div class="form-group">
                <label for="brand_id">所属品牌</label>
-               <select name="brand_id" id="brand_id" class="form-control small">
-                  <option :value="item.value" v-for="item in brandsList" :key="item.value" :selected="item.value==articleData.brand_id">{{item.text}}</option>
+               <select name="brand_id" id="brand_id" class="form-control small" v-model="articleData.brand_id">
+                  <option :value="item.value" v-for="item in brandsList" :key="item.value">{{item.text}}</option>
                </select>
             </div>
             <div class="form-group">
                <label for="cid">文章分类</label>
-               <select name="cid" id="cid" class="form-control small">
-                  <option :value="item.value" v-for="item in sortList" :key="item.value" :selected="item.value==articleData.category_id">{{item.text}}</option>
+               <select name="cid" id="cid" class="form-control small" v-model="articleData.category_id">
+                  <option :value="item.value" v-for="item in sortList" :key="item.value">{{item.text}}</option>
                </select>
             </div>
             <div class="form-group">
@@ -30,6 +30,7 @@
                      <input type="file" accept="image/*" class="upfile" data-type="article" data-authority="article_upload"><span>点击选择图片</span>
                   </div>
                </div>
+               <input type="hidden" :value="cover" data-rule="*" data-errmsg="缩略图必须上传" data-sync="true">
             </div>
             <div class="form-group">
                <label for="audio">发布音频</label>
@@ -41,7 +42,6 @@
                <label for="audio">文章内容</label>
                <div id="editor" style="width:900px;height:400px;"></div>
             </div>
-            <input type="hidden" :value="cover" data-rule="*" data-errmsg="缩略图必须上传" data-sync="true">
             <button type="submit" class="btn btn-primary">提交</button>
          </form>
       </div>
@@ -65,7 +65,7 @@
             articleData:{     //文章数据
                 audio:{}
             },
-            cover:''          //缩略图
+            cover:'',         //缩略图
          }
       },
       created(){

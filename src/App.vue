@@ -61,7 +61,7 @@
    #main .crumb{width:100%;height:40px;padding:10px;border:1px solid #ccc;background:#F9F9F9;margin-left:-1px}
    /*#main .crumb i{margin-right:10px}*/
    #main .crumb a:after{content:'>';display:inline-block;color:#aaa;margin:0 5px}
-   #main header{margin:.4em 0;}
+   #main header{margin-bottom:.5em}
    #main footer .page{float:right}
    #main .content{padding:.5em;height:100%}
    #main form.post{margin-bottom:50px;}
@@ -75,14 +75,17 @@
    a.editable-click{border-bottom:none}
    .uploader:after{content:'';display:block;clear:both}
    .uploader .box{position:relative;width:140px;height:130px;background:#fafafa;float:left;margin-right:10px;border:1px solid #eee;overflow:hidden}
-   .uploader .box img{width:100%;height:100%}
+   .uploader .box img{width:100%;height:100%;object-fit:cover}
    .uploader .box span{position:absolute;top:50%;left:10px;right:10px;height:20px;line-height:20px;margin-top:-10px;overflow:hidden;text-align:center;z-index:8}
    .uploader .box i{position:absolute;top:0;left:0;width:100%;height:2px;background:red}
    .uploader .box a{position:absolute;bottom:0;left:0;right:0;padding:0 10px;height:30px;line-height:30px;background:rgba(0,0,0,.5);color:#fff;text-align:center}
    .uploader .picker{border-style:dashed}
-   .uploader input.upfile{opacity:0;position:absolute;top:0;left:0;padding:0;width:100%;height:100%;opacity:0;z-index:9;cursor:pointer}
+   .uploader input.upfile{position:absolute;top:0;left:0;padding:0;width:100%;height:100%;opacity:0;z-index:9;cursor:pointer}
 
    #edui1_iframeholder{height:400px !important;}
+
+   /*vue变量为渲染前不显示*/
+   [v-cloak]{display:none !important;}
 
    /*Element-ui*/
    .el-icon-loading:before{font-size:26px}

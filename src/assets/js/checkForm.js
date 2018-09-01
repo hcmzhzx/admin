@@ -14,8 +14,7 @@ class CheckForm {
          "domain": /^[^\s]{3,6}$/,
          "code": /^\d{6}/
       };
-      var inputs = obj.target.querySelectorAll('input,textarea,select');
-      var posts = {}
+      var inputs = obj.target.querySelectorAll('input,textarea,select'), posts = {}, data = {};
       for (var i = 0; i < inputs.length; i++) {
          var ele = inputs[i], value = ele.value, name = ele.getAttribute('name'), rule = ele.getAttribute('data-rule'), sync = ele.getAttribute('data-sync');
          // 是否开启验证
@@ -41,7 +40,13 @@ class CheckForm {
             posts[name] = value
          }
       }
-      return callback(posts)
+      // 过滤掉没有 name 的值
+      for(let[key,val] of Object.entries(posts)){
+         if(key != 'null'){
+            data[key] = val;
+         }
+      }
+      return callback(data)
    }
 }
 

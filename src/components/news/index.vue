@@ -93,7 +93,7 @@
 
             meta:{},  // 分页列表
             currentPage: 1,
-            search:{}, //搜索内容
+            search:{} //搜索内容
          }
       },
       created(){
@@ -119,7 +119,6 @@
          })
       },
       updated(){
-         // 初始化编辑框
          const _this = this;
          // 下拉框(品牌)
          $('.table a[data-type="select"][data-name!="status"]').editable({
@@ -178,7 +177,7 @@
             }
          },
 
-         // 删除商品
+         // 删除文章
          del(id){
             this.$confirm(`确定删除此记录?`, {
                confirmButtonText: '确定',

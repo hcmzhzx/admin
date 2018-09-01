@@ -36,7 +36,7 @@
                   </select>
                   <select name="brand_id" class="form-control">
                      <option value="">所属品牌</option>
-                     <option v-for="item in brandList" :key="item.value" :value="item.value">{{item.text}}</option>
+                     <option v-for="item in brandsList" :key="item.value" :value="item.value">{{item.text}}</option>
                   </select>
                   <input type="submit" value="查询" class="form-control btn btn-primary">
                </form>

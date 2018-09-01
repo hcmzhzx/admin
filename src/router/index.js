@@ -9,11 +9,11 @@ import admin_qrcodeadd from '@/components/admin/qrcodeadd'
 
 import brand_index from '@/components/brand/index'
 import brand_add from '@/components/brand/add'
-// import brand_edit from '@/components/brand/edit'
+import brand_edit from '@/components/brand/edit'
 
 import partner_index from '@/components/partner/index'
 import partner_add from '@/components/partner/add'
-// import partner_edit from '@/components/partner/edit'
+import partner_edit from '@/components/partner/edit'
 import partner_user from '@/components/partner/user'
 import partner_wechat from '@/components/partner/wechat'
 import partner_payment from '@/components/partner/payment'
@@ -27,7 +27,7 @@ import goods_cateadd from '@/components/goods/cateadd'
 
 import template_index from '@/components/template/index'
 import template_add from '@/components/template/add'
-// import template_edit from '@/components/template/edit'
+import template_edit from '@/components/template/edit'
 
 import user_index from '@/components/user/index'
 import user_order from '@/components/user/order'
@@ -43,6 +43,14 @@ import news_add from '@/components/news/add'
 import news_edit from '@/components/news/edit'
 import news_category from '@/components/news/category'
 import news_cateadd from '@/components/news/cateadd'
+
+import video_index from '@/components/video/index'
+import video_add from '@/components/video/add'
+import video_category from '@/components/video/category'
+import video_cateadd from '@/components/video/cateadd'
+
+import report_common from '@/components/report/common'
+import report_register from '@/components/report/register'
 
 
 
@@ -90,11 +98,11 @@ export default new Router({
                name: 'brand_add',
                component: brand_add
             },
-            /*{
+            {
                path: 'brand/edit',
                name: 'brand_edit',
                component: brand_edit
-            },*/
+            },
             {
                path: 'partner/index',
                name: 'partner_index',
@@ -105,11 +113,11 @@ export default new Router({
                name: 'partner_add',
                component: partner_add
             },
-            /*{
+            {
                path: 'partner/edit',
                name: 'partner_edit',
                component: partner_edit
-            },*/
+            },
             {
                path: 'partner/user',
                name: 'partner_user',
@@ -165,11 +173,11 @@ export default new Router({
                name: 'template_add',
                component: template_add
             },
-            /*{
+            {
                path: 'template/edit',
                name: 'template_edit',
                component: template_edit
-            },*/
+            },
             {
                path: 'user/index',
                name: 'user_index',
@@ -230,6 +238,44 @@ export default new Router({
                name: 'news_cateadd',
                component: news_cateadd
             },
+            {
+               path: 'video/index',
+               name: 'video_index',
+               component: video_index
+            },
+            {
+               path: 'video/add',
+               name: 'video_add',
+               component: video_add
+            },
+            {
+               path: 'video/category',
+               name: 'video_category',
+               component: video_category
+            },
+            {
+               path: 'video/cateadd',
+               name: 'video_cateadd',
+               component: video_cateadd
+            },
+
+            {
+               path: 'report/common',
+               name: 'report_common',
+               component: report_common
+            },
+            {
+               path: 'report/register',
+               name: 'report_register',
+               component: report_register
+            },
+
+
+
+
+
+
+
 
 
 

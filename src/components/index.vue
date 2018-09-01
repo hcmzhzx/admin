@@ -62,7 +62,7 @@
                   <i class="glyphicon glyphicon-shopping-cart"></i>商品管理<i class="glyphicon glyphicon-menu-down"></i>
                </a>
                <ul id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                  <li><a href="javascript:;" @click="$router.push({name:'goods_index'})" data-url="/goods/index.html" title="商品列表" class="ajax-call">商品列表</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'goods_index'})" title="商品列表" class="ajax-call">商品列表</a></li>
                </ul>
             </li>
             <li class="panel">
@@ -71,7 +71,7 @@
                </a>
                <ul id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                   <li><a href="javascript:;" @click="$router.push({name:'news_category'})" title="文章分类" class="ajax-call">文章分类</a></li>
-                  <li><a href="javascript:;" @click="$router.push({name:'news_index'})" data-url="/news/index.html" title="文章列表" class="ajax-call">文章列表</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'news_index'})" title="文章列表" class="ajax-call">文章列表</a></li>
                </ul>
             </li>
             <li class="panel">
@@ -79,8 +79,8 @@
                   <i class="glyphicon glyphicon-film"></i>视频管理<i class="glyphicon glyphicon-menu-down"></i>
                </a>
                <ul id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                  <li><a href="javascript:;" data-url="/video/category.html" title="视频分类" class="ajax-call">视频分类</a></li>
-                  <li><a href="javascript:;" data-url="/video/index.html" title="视频列表" class="ajax-call">视频列表</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'video_category'})" title="视频分类" class="ajax-call">视频分类</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'video_index'})" title="视频列表" class="ajax-call">视频列表</a></li>
                </ul>
             </li>
             <li class="panel">
@@ -88,8 +88,8 @@
                   <i class="glyphicon glyphicon-signal"></i>数据报表<i class="glyphicon glyphicon-menu-down"></i>
                </a>
                <ul id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                  <li><a href="javascript:;" data-url="/report/common.html" title="常规报表" class="ajax-call">常规报表</a></li>
-                  <li><a href="javascript:;" data-url="/report/register.html" title="入驻报表" class="ajax-call">入驻报表</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'report_common'})" title="常规报表" class="ajax-call">常规报表</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'report_register'})" title="入驻报表" class="ajax-call">入驻报表</a></li>
                   <li><a href="javascript:;" data-url="/report/sale.html" title="销售额报表" class="ajax-call">销售额报表</a></li>
                   <li><a href="javascript:;" data-url="/report/beginsalemoney.html" title="销售额" class="ajax-call">销售额</a></li>
                   <li><a href="javascript:;" data-url="/report/beginsalecounter.html" title="销售量" class="ajax-call">销售量</a></li>

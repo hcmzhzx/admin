@@ -1,7 +1,7 @@
 <template>
    <div class="flexitemv">
       <crumb :content="text"></crumb>
-      <div class="content" style="">
+      <div class="content">
          <form class="post" @submit.prevent="sendForm">
             <div class="form-group">
                <label for="title">文章标题</label>
@@ -23,8 +23,10 @@
                <label for="cid">缩略图</label>
                <div class="uploader">
                   <div class="box picker">
-                     <input type="file" accept="image/*" class="upfile" data-type="article" data-authority="article_upload"><span>点击选择图片</span></div>
+                     <input type="file" accept="image/*" class="upfile" data-type="article" data-authority="article_upload"><span>点击选择图片</span>
+                  </div>
                </div>
+               <input type="hidden" :value="cover" data-rule="*" data-errmsg="缩略图必须上传" data-sync="true">
             </div>
             <div class="form-group">
                <label for="audio">发布音频</label>
@@ -36,7 +38,6 @@
                <label for="audio">文章内容</label>
                <div id="editor" style="width:900px;height:400px;"></div>
             </div>
-            <input type="hidden" :value="cover" data-rule="*" data-errmsg="缩略图必须上传" data-sync="true">
             <button type="submit" class="btn btn-primary">提交</button>
          </form>
       </div>
@@ -138,9 +139,10 @@
                Formdata.forEach((item)=>{
                    Form[item.name] = item.value
                });
-               this.$http.post('article',Form).then(res=>{
+               console.log(Form);
+               /*this.$http.post('article',Form).then(res=>{
                   this.$router.go(-1)
-               })
+               })*/
             })
          }
       }

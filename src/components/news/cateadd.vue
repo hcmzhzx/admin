@@ -33,7 +33,7 @@
       methods:{
          sendForm(e){
             new CheckForm(e,err => {
-               this.$message({    // 此处搞不懂为什么不能使用 layer
+               this.$message({
                   message: err,
                   type: 'warning'
                });

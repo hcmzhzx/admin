@@ -7,6 +7,12 @@ import axios from'./assets/js/axios'
 
 import {makePy} from './assets/js/pinyin'  // 首拼文件
 
+// 引入文本编辑器静态文件
+import '../static/ueditor/ueditor.config.js'
+import '../static/ueditor/ueditor.all.js'
+import '../static/ueditor/lang/zh-cn/zh-cn.js'
+import '../static/ueditor/ueditor.parse.min.js'
+
 Vue.use(ElementUi);
 
 Vue.config.productionTip = false
@@ -20,11 +26,9 @@ Vue.mixin({
          return str.substring(str.lastIndexOf('cn/')+3)
       },
 
-      // 请求编辑器文件
+      // 初始化富文本编辑器
       getUE(){
-         $.ajax({url:'../static/ueditor/ueditor.all.js',dataType:'script',cache:true,success:function (){
-            UE.getEditor('editor',{enableAutoSave:false,autoHeightEnabled:false});
-         }})
+         UE.getEditor('editor', {enableAutoSave: false, autoHeightEnabled: false});
       },
 
       // 首拼

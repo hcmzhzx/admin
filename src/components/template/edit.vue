@@ -113,7 +113,7 @@
             const form = new FormData();
             form.append('type',type);
             [...files].forEach((item)=>{
-               form.append('image[]',item);
+               form.append('images[]',item);
             })
             form.append('authority',authority);
             // 上传loading
