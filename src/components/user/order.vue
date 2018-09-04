@@ -15,29 +15,7 @@
                   </select>
                   <select name="admin_id" class="form-control">
                      <option value="">所属员工</option>
-                     <option value="17">洪浩明</option>
-                     <option value="34">伍文波</option>
-                     <option value="35">洪江明</option>
-                     <option value="36">覃峥嵘</option>
-                     <option value="38">冯美娇</option>
-                     <option value="39">皮蝉</option>
-                     <option value="40">李书琴</option>
-                     <option value="43">肖添禹</option>
-                     <option value="44">王世富</option>
-                     <option value="45">刘嘉伟</option>
-                     <option value="50">余腊</option>
-                     <option value="52">付正伟</option>
-                     <option value="53">赖海燕</option>
-                     <option value="55">张雄军</option>
-                     <option value="56">刘威</option>
-                     <option value="60">周超</option>
-                     <option value="61">邱德奇</option>
-                     <option value="62">张永</option>
-                     <option value="63">贺乐乐</option>
-                     <option value="64">李玉流</option>
-                     <option value="65">何强</option>
-                     <option value="66">李叶山</option>
-                     <option value="67">鲍伟明</option>
+                     <option :value="item.id" v-for="item in beginList" :key="item.id">{{item.username}}</option>
                   </select>
                   <select name="pay_status" class="form-control">
                      <option value="">支付类型</option>
@@ -94,7 +72,7 @@
                   </td>
                   <td>{{item.user.normal_name}}<a href="#" data-type="text" :data-pk="item.id" data-name="normal_award" data-value="119" class="editable editable-click" v-if="item.normal_award || item.user.normal_name">[{{item.normal_award}}元]</a></td>
                   <td>
-                     <a href="#" data-type="select" data-url="" :data-pk="item.id" data-name="admin_id" data-source="" data-value="34" class="editable editable-click">伍文波</a>
+                     <a href="#" data-type="select" data-url="" :data-pk="item.id" data-name="admin_id" :data-source="JSON.stringify(their(beginList))" :data-value="item.user.begin_admin_id" class="editable editable-click"></a>
                   </td>
                   <td>{{item.user.create_time}}</td>
                   <td>{{item.create_time}}</td>
@@ -130,6 +108,7 @@
             orderList:[], // 订单列表
             brandsList: [], // 品牌列表
             partnerList: [], // 合作列表
+            beginList:[],  // 员工列表
 
             search:{},  // 搜索
             meta: {},  // 分页列表
@@ -141,6 +120,11 @@
          this.$http.get('order?include=user,brand,partner').then(res=>{
             this.orderList = res.data;
             this.meta = res.meta.pagination;
+         });
+
+         // 获取员工列表
+         this.$store.dispatch('beginSale').then(res=>{
+            this.beginList = res
          });
 
          // 获取品牌列表
@@ -181,6 +165,16 @@
          })
       },
       methods:{
+         // 所属员工
+         their(data){
+            return data.map((item)=>{
+               let json={};
+               json.text = item.username;
+               json.value = item.id;
+               return json
+            })
+         },
+
          // 搜索
          sendForm(e){
             this.currentPage = 1;

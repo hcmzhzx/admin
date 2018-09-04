@@ -121,7 +121,7 @@
                const files = this.files[0];
                const ele = this.parentNode, type = this.getAttribute('data-type'), authority = this.getAttribute('data-authority');
                $(ele).siblings().remove();
-               $(ele).before(`<div class="box list"><img src=""><i class="progress"></i><a href="javascript:;" class="preview">上传中</a><input type="hidden" name="cover" value=""></div>`);
+               $(ele).before(`<div class="box list"><img src="${window.URL.createObjectURL(files)}"><i class="progress"></i><a href="javascript:;" class="preview">上传中</a><input type="hidden" name="cover" value=""></div>`);
                _this.readFile(type,files,authority,$(ele.parentNode.firstElementChild));
                $(ele.parentNode.firstChild).append(`<span style="color:#ccc;font-size:0.8em;">预览中</span>`);
                // 修改删除图片
@@ -153,7 +153,6 @@
             form.append('type',type);
             form.append('image',files);
             form.append('authority',authority);
-            ev.find('img').attr('src',window.URL.createObjectURL(files));
             this.$http.post('image',form).then(url=>{
                this.cover = url.path;
                ev.find('input[type=hidden]').val(url.path);

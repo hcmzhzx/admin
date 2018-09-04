@@ -90,18 +90,18 @@
                <ul id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                   <li><a href="javascript:;" @click="$router.push({name:'report_common'})" title="常规报表" class="ajax-call">常规报表</a></li>
                   <li><a href="javascript:;" @click="$router.push({name:'report_register'})" title="入驻报表" class="ajax-call">入驻报表</a></li>
-                  <li><a href="javascript:;" data-url="/report/sale.html" title="销售额报表" class="ajax-call">销售额报表</a></li>
-                  <li><a href="javascript:;" data-url="/report/beginsalemoney.html" title="销售额" class="ajax-call">销售额</a></li>
-                  <li><a href="javascript:;" data-url="/report/beginsalecounter.html" title="销售量" class="ajax-call">销售量</a></li>
-                  <li><a href="javascript:;" data-url="/report/partnersale.html" title="推广销售额" class="ajax-call">推广销售额</a></li>
-                  <li><a href="javascript:;" data-url="/report/aftersalecounter.html" title="售后服务报表" class="ajax-call">售后服务报表</a></li>
-                  <li><a href="javascript:;" data-url="/report/partner.html" title="合作推广业绩" class="ajax-call">合作推广业绩</a></li>
-                  <li><a href="javascript:;" data-url="/report/partnercount.html" title="合作推广订单" class="ajax-call">合作推广订单</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'report_sale'})" title="销售额报表" class="ajax-call">销售额报表</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'report_beginsalemoney'})" title="销售额" class="ajax-call">销售额</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'report_beginsalecounter'})" title="销售量" class="ajax-call">销售量</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'report_partnersale'})" title="推广销售额" class="ajax-call">推广销售额</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'report_aftersalecounter'})" title="售后服务报表" class="ajax-call">售后服务报表</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'report_partner'})" data-url="/report/partner.html" title="合作推广业绩" class="ajax-call">合作推广业绩</a></li>
+                  <li><a href="javascript:;" @click="$router.push({name:'report_partnercount'})" data-url="/report/partnercount.html" title="合作推广订单" class="ajax-call">合作推广订单</a></li>
                </ul>
             </li>
          </ul>
       </nav>
-      <div id="main" class="flex">
+      <div id="main" class="flexitem">
          <router-view></router-view>
       </div>
    </div>

@@ -86,7 +86,7 @@
          this.$http.get('brands').then(res=>{
             this.brandData = res.data;
             //this.meta = res.meta.pagination;
-         }).catch(err=>err);
+         });
       },
       updated(){
          // 初始化编辑框

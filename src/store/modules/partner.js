@@ -15,6 +15,7 @@ const mutations = { //改变属性 使用(commit)
 };
 
 const actions = { //应用 mutation 使用(dispath)
+   // 合作站点列表
    PartnerData({commit,state}){
       if(state.partnerList.length) return Promise.resolve(state.partnerList);
       return axios.get('partner?include=brand').then(partner=>{

@@ -58,11 +58,11 @@
                const files = this.fileList = this.files;
                if(files.length == 0) return;
                const ele = $(this).parent(), type = this.getAttribute('data-type'), authority = this.getAttribute('data-authority');
-               [...files].forEach((item,index)=>{
+               [...files].forEach((item)=>{
                   let type = item.type.split("").join("").split("/")[1];
                   if(_this.fileType.test(type)){
-                     ele.before(`<div class="box list" style="width:120px;height:200px;"><img src="${window.URL.createObjectURL(item)}"><i class="progress"></i><a href="javascript:;" class="preview trash">上传中</a></div>`);
-                     $('.lists .list').eq(index).append(`<span style="color:#ccc;font-size:0.8em;">预览中</span>`);
+                     ele.before(`<div class="box list" style="width:120px;height:200px;"><img src="${window.URL.createObjectURL(item)}"><i class="progress"></i><a href="javascript:;" class="preview">上传中</a></div>`);
+                     $('.lists .list').eq($('.lists .list').size()-1).append(`<span style="color:#ccc;font-size:0.8em;">预览中</span>`);
                      _this.state = true;
                   } else {
                      _this.$message({message: '图片格式不正确', type: 'warning'})
@@ -96,7 +96,7 @@
             const form = new FormData();
             form.append('type',type);
             [...files].forEach((item)=>{
-               form.append('images[]',item);
+               form.append('image[]',item);
             })
             form.append('authority',authority);
             // 上传loading
@@ -107,7 +107,9 @@
                background: 'rgba(0, 0, 0, 0.7)'
             });
             this.$http.post('image',form).then(url=>{
-               this.themeArr.push(url.split(','));
+               url.split(',').forEach((item)=>{
+                  this.themeArr.push(item)
+               });
                ev.find('span').remove();
                ev.find('a.preview').addClass('trash').text('修改');
                loading.close(); // 结束loading

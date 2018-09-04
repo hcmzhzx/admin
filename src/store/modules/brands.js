@@ -15,6 +15,7 @@ const mutations = { //改变属性 使用(commit)
 };
 
 const actions = { //应用 mutation 使用(dispath)
+   // 品牌
    BrandsData({commit,state}){
       if(state.brandsList.length) return Promise.resolve(state.brandsList);
       return axios.get('brands?sort=1').then(brand=>{

@@ -19,7 +19,7 @@
 <style>
    html,body{height:100%}
    *{margin:0;padding:0;box-sizing:border-box;font:inherit;vertical-align:baseline}
-   body{font:1.1em '\5FAE\8F6F\96C5\9ED1',Arial,'\9ED1\4F53','\5B8B\4F53'}
+   body{font: 1.1em '\5FAE\8F6F\96C5\9ED1',Arial,'\9ED1\4F53','\5B8B\4F53';}
    table{border-collapse:collapse}
    input{font-family:'\5FAE\8F6F\96C5\9ED1','\9ED1\4F53','\5B8B\4F53';}
    button,input,select,textarea{font:inherit;outline:0;border:0;border-radius:0;-webkit-tap-highlight-color:transparent;background:0 0;line-height:normal;-webkit-writing-mode:horizontal-tb;resize:none;color:inherit;white-space:pre-wrap;word-wrap:break-word;-webkit-rtl-ordering:logical;}
@@ -42,7 +42,7 @@
    .nbr{display:-webkit-box;flex-wrap:nowrap} /*不换行*/
 
    #app{height:100%}
-   #aside{font-size:14px;margin-top:1px;width:12%;min-width:160px;}
+   #aside{font-size:14px;margin-top:1px;width:10%;min-width:160px;}
    #aside #accordion{border-right:1px solid #ccc;}
    #aside .panel{margin:0;border:none;}
    #aside .panel>a.on{border-left:3px solid #438EB9;color:#438EB9;background:#fff}

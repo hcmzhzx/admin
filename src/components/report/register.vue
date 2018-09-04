@@ -6,100 +6,38 @@
             <div class="search">
                <form class="form-inline" @submit.prevent="sendForm">
                   <div class="form-group">
-                     <select name="type" class="form-control">
+                     <select name="member" class="form-control">
                         <option value="1">正式会员</option>
-                        <option value="0">全部用户</option>
+                        <option value="">全部用户</option>
                      </select>
                   </div>
                   <div class="form-group">
-                     <input type="date" name="started_at" placeholder="开始时间" class="form-control">
+                     <input type="date" name="start_at" placeholder="开始时间" class="form-control">
                   </div>
                   <div class="form-group">
-                     <input type="date" name="ended_at" placeholder="结束时间" class="form-control">
+                     <input type="date" name="end_at" placeholder="结束时间" class="form-control">
                   </div>
-                  <input type="submit" value="查询" class="btn btn-primary">
+                  <button type="submit" class="btn btn-primary">查询</button>
                </form>
             </div>
          </header>
          <div class="table-content">
-            <table class="table table-bordered table-hover table-condensed table-striped">
+            <table class="table table-bordered table-hover table-striped">
                <thead>
                <tr class="active">
                   <th>品牌/日期</th>
-                  <th>02</th>
-                  <th>03</th>
-                  <th>04</th>
-                  <th>05</th>
-                  <th>06</th>
-                  <th>07</th>
-                  <th>08</th>
-                  <th>09</th>
-                  <th>10</th>
-                  <th>11</th>
-                  <th>12</th>
-                  <th>13</th>
-                  <th>14</th>
-                  <th>15</th>
-                  <th>16</th>
-                  <th>17</th>
-                  <th>18</th>
-                  <th>19</th>
-                  <th>20</th>
-                  <th>21</th>
-                  <th>22</th>
-                  <th>23</th>
-                  <th>24</th>
-                  <th>25</th>
-                  <th>26</th>
-                  <th>27</th>
-                  <th>28</th>
-                  <th>29</th>
-                  <th>30</th>
-                  <th>31</th>
-                  <th>01</th>
-                  <th style="color: red">总计</th>
+                  <th v-for="(item,key) in dateline" :key="key">{{item}}</th>
+                  <th style="color:red">总计</th>
                </tr>
                </thead>
                <tbody>
-               <tr v-for="(item,index) in registerList" :key="item.name">
-                  <!--<td>完美</td>
-                  <td>
-                     <a title="入驻详情" href="javascript:;" class="ajax-call" data-url="/report/registerdetail/started_at/1533139200/brand/%E5%AE%8C%E7%BE%8E.html">2</a>
+               <tr v-for="(val,keys,index) in reportList" :key="val.index" ref="listTr">
+                  <td>{{val.name}}</td>
+                  <td v-for="(item,key,index) of val" v-if="key!='name'" :data-id="keys" :data-day="key">
+                     <a title="入驻详情" href="javascript:;" class="ajax-call" v-if="item!=0" @click="started">{{item}}</a>
+                     <span style="color:#ccc" v-else>-</span>
                   </td>
-                  <td><span style="color: #ccc">-</span></td>-->
-                  <td>{{item.name}}</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td style="color:red">{{rowTotal(val)}}</td>
                </tr>
                </tbody>
             </table>
@@ -118,15 +56,73 @@
       data(){
          return {
             text: [{txt: '入驻报表'}],
-            registerList:{}  //入驻报表
+            dateline: [],  //日期
+            reportList: {},  //入驻报表
+            member:1,  // 默认是会员
+
+            search: {}  //搜索
          }
       },
       created(){
-         this.$http.get('report/brand?member=1').then(res=>{
-            console.log(res);
-            this.registerList = res;
+         const loading = this.$loading({
+            lock: true,
+            text: '加载中...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+         });
+         //请求报表数据
+         this.$http.get('report/brand?member=1').then(res => {
+            for (let [key, val] of Object.entries(res)) {
+               key == 0 ? this.dateline = val : this.reportList[key] = val;
+            }
+            loading.close(); // 结束loading
          })
-      }
+      },
+      methods: {
+         // 行求和
+         rowTotal(item){
+            let arrNuber = Object.values(item).filter((item) => {
+               return Number.isFinite(item);
+            });
+            return arrNuber.reduce((prev, cur) => {
+               return prev + cur
+            })
+         },
 
+         // 搜索
+         sendForm(e){
+            let inputs = e.target.querySelectorAll('select,input'), posts = {};
+            inputs.forEach((item) => {
+               posts[item.getAttribute('name')] = item.value
+            });
+            const loading = this.$loading({
+               lock: true,
+               text: '加载中...',
+               spinner: 'el-icon-loading',
+               background: 'rgba(0, 0, 0, 0.7)'
+            });
+            this.search = posts;
+            this.$http.get(`report/brand?member=${posts.member}&begin_time=${posts.start_at}&end_time=${posts.end_at}`).then(res => {
+               for (let [key, val] of Object.entries(res)) {
+                  key == 0 ? this.dateline = val : this.reportList[key] = val;
+               }
+               loading.close(); // 结束loading
+            })
+         },
+
+         //点击详情页
+         started(e){
+            let year = new Date().Format("yyyy-"), id = e.target.parentNode.getAttribute('data-id')=='总计'?'':e.target.parentNode.getAttribute('data-id'), time = '';
+            // 正常未搜索过
+            if (Object.keys(this.search).length == 0) {
+               time = year + e.target.parentNode.getAttribute('data-day');
+               this.$router.push({name:'report_enterDetail', query:{vip:this.search.member,id,time}})
+            } else {
+               // 搜索过
+               time = this.search.start_at.substr(0, 5) + e.target.parentNode.getAttribute('data-day');
+               this.$router.push({name:'report_enterDetail', query:{vip:this.search.member,id,time}})
+            }
+         }
+      }
    }
 </script>

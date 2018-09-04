@@ -49,10 +49,10 @@
       },
       data(){
          return {
-            text:[{txt:'销售额报表'}],
+            text: [{txt:'合作推广业绩'}],
             dateline: [],  //日期
-            reportList: {}  //销售额报表
-
+            reportList: {},  //合作推广业绩报表
+            search:{}      //搜索
          }
       },
       created(){
@@ -62,15 +62,14 @@
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.7)'
          });
-
-         this.$http.get(`report/partner`).then(res=>{
+         this.$http.get(`report/dealer_achievement`).then(res => {
             for (let [key, val] of Object.entries(res)) {
                key == 0 ? this.dateline = val : this.reportList[key] = val;
             }
             loading.close(); // 结束loading
          })
       },
-      methods:{
+      methods: {
          // 行求和
          rowTotal(item){
             let arrNuber = Object.values(item).filter((item) => {
@@ -88,13 +87,14 @@
                posts[item.getAttribute('name')] = item.value
             });
             if (posts.start_at || posts.end_at) {
+               this.search = posts;
                const loading = this.$loading({
                   lock: true,
                   text: '加载中...',
                   spinner: 'el-icon-loading',
                   background: 'rgba(0, 0, 0, 0.7)'
                });
-               this.$http.get(`report/partner?begin_time=${posts.start_at}&end_time=${posts.end_at}`).then(res=>{
+               this.$http.get(`report/dealer_achievement?begin_time=${posts.start_at}&end_time=${posts.end_at}`).then(res => {
                   for (let [key, val] of Object.entries(res)) {
                      key == 0 ? this.dateline = val : this.reportList[key] = val;
                   }

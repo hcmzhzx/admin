@@ -51,6 +51,16 @@ import video_cateadd from '@/components/video/cateadd'
 
 import report_common from '@/components/report/common'
 import report_register from '@/components/report/register'
+import report_enterDetail from '@/components/report/enterDetail'
+import report_sale from '@/components/report/sale'
+import report_beginsalemoney from '@/components/report/beginsalemoney'
+import report_beginsalecounter from '@/components/report/beginsalecounter'
+import report_salesDetail from '@/components/report/salesDetail'
+import report_partnersale from '@/components/report/partnersale'
+import report_aftersalecounter from '@/components/report/aftersalecounter'
+import report_serveDetail from '@/components/report/serveDetail'
+import report_partner from '@/components/report/partner'
+import report_partnercount from '@/components/report/partnercount'
 
 
 
@@ -269,19 +279,56 @@ export default new Router({
                name: 'report_register',
                component: report_register
             },
-
-
-
-
-
-
-
-
-
-
-
-
-
+            {
+               path: 'report/enterDetail',
+               name: 'report_enterDetail',
+               component: report_enterDetail
+            },
+            {
+               path: 'report/sale',
+               name: 'report_sale',
+               component: report_sale
+            },
+            {
+               path: 'report/beginsalemoney',
+               name: 'report_beginsalemoney',
+               component: report_beginsalemoney
+            },
+            {
+               path: 'report/beginsalecounter',
+               name: 'report_beginsalecounter',
+               component: report_beginsalecounter
+            },
+            {
+               path: 'report/salesDetail',
+               name: 'report_salesDetail',
+               component: report_salesDetail
+            },
+            {
+               path: 'report/partnersale',
+               name: 'report_partnersale',
+               component: report_partnersale
+            },
+            {
+               path: 'report/aftersalecounter',
+               name: 'report_aftersalecounter',
+               component: report_aftersalecounter
+            },
+            {
+               path: 'report/serveDetail',
+               name: 'report_serveDetail',
+               component: report_serveDetail
+            },
+            {
+               path: 'report/partner',
+               name: 'report_partner',
+               component: report_partner
+            },
+            {
+               path: 'report/partnercount',
+               name: 'report_partnercount',
+               component: report_partnercount
+            }
          ]
       },
       {path: '*', redirect: '/'},

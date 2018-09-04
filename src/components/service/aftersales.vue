@@ -11,7 +11,7 @@
                   </select>
                   <select name="admin_id" class="form-control">
                      <option value="">所属员工</option>
-                     <option value="39">皮蝉</option>
+                     <option :value="item.id" v-for="item in afterList" :key="item.id">{{item.username}}</option>
                   </select>
                   <select name="service" class="form-control">
                      <option value="">服务情况</option>
@@ -88,7 +88,7 @@
                   <td>{{item.up_time}}</td>
                   <td>{{item.after.service_time}}</td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-name="admin_id" data-value="" class="editable editable-click editable-empty">--</a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="admin_id" :data-source="JSON.stringify(their(afterList))" :data-value="item.after.admin_id" class="editable editable-click editable-empty"></a>
                   </td>
                   <td>{{item.after.comment}}</td>
                </tr>
@@ -149,7 +149,7 @@
          })
 
          // 售后客服列表
-         this.$http.get('after_sale/admin').then(res=>{
+         this.$store.dispatch('afterSale').then(res=>{
             this.afterList = res
          })
       },
@@ -183,6 +183,16 @@
          })
       },
       methods: {
+         // 所属员工
+         their(data){
+            return data.map((item)=>{
+               let json={};
+               json.text = item.username;
+               json.value = item.id;
+               return json
+            })
+         },
+
          // 搜索
          sendForm1(e){
             this.currentPage = 1;

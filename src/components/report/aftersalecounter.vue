@@ -19,7 +19,7 @@
             <table class="table table-bordered table-hover table-striped">
                <thead>
                <tr class="active">
-                  <th>品牌/日期</th>
+                  <th>姓名/日期</th>
                   <th v-for="(item,key) in dateline" :key="key">{{item}}</th>
                   <th style="color:red">总计</th>
                </tr>
@@ -28,7 +28,7 @@
                <tr v-for="(val,keys,index) in reportList" :key="val.index" ref="listTr">
                   <td>{{val.name}}</td>
                   <td v-for="(item,key,index) of val" v-if="key!='name'" :data-id="keys" :data-day="key">
-                     <span v-if="item!=0">{{item}}</span>
+                     <a title="服务详情" href="javascript:;" class="ajax-call" v-if="item!=0" @click="started">{{item}}</a>
                      <span style="color:#ccc" v-else>-</span>
                   </td>
                   <td style="color:red">{{rowTotal(val)}}</td>
@@ -49,10 +49,10 @@
       },
       data(){
          return {
-            text:[{txt:'销售额报表'}],
+            text: [{txt:'售后服务报表'}],
             dateline: [],  //日期
-            reportList: {}  //销售额报表
-
+            reportList: {},  //售后服务报表
+            search:{}      //搜索
          }
       },
       created(){
@@ -63,14 +63,14 @@
             background: 'rgba(0, 0, 0, 0.7)'
          });
 
-         this.$http.get(`report/partner`).then(res=>{
+         this.$http.get(`report/after_sale_count`).then(res => {
             for (let [key, val] of Object.entries(res)) {
                key == 0 ? this.dateline = val : this.reportList[key] = val;
             }
             loading.close(); // 结束loading
          })
       },
-      methods:{
+      methods: {
          // 行求和
          rowTotal(item){
             let arrNuber = Object.values(item).filter((item) => {
@@ -88,19 +88,33 @@
                posts[item.getAttribute('name')] = item.value
             });
             if (posts.start_at || posts.end_at) {
+               this.search = posts;
                const loading = this.$loading({
                   lock: true,
                   text: '加载中...',
                   spinner: 'el-icon-loading',
                   background: 'rgba(0, 0, 0, 0.7)'
                });
-               this.$http.get(`report/partner?begin_time=${posts.start_at}&end_time=${posts.end_at}`).then(res=>{
+               this.$http.get(`report/after_sale_count?begin_time=${posts.start_at}&end_time=${posts.end_at}`).then(res => {
                   for (let [key, val] of Object.entries(res)) {
                      key == 0 ? this.dateline = val : this.reportList[key] = val;
                   }
                   loading.close(); // 结束loading
                })
             }
+         },
+
+         // 详情
+         started(e){
+            let year = new Date().Format("yyyy-"), id = e.target.parentNode.getAttribute('data-id')=='总计'?'':e.target.parentNode.getAttribute('data-id'), time = '';
+            // 未搜索过
+            if (Object.keys(this.search).length == 0) {
+               time = year + e.target.parentNode.getAttribute('data-day');
+            } else {
+               // 搜索过
+               time = this.search.start_at.substr(0, 5) + e.target.parentNode.getAttribute('data-day');
+            }
+            this.$router.push({name:'report_serveDetail', query:{id,time}})
          }
       }
    }
