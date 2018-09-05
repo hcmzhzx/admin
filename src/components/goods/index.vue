@@ -44,7 +44,7 @@
                <tr v-for="item in goodsList" :key="item.id">
                   <td>{{item.id}}</td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click"></a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click">{{source(item.brand.title)}}</a>
                   </td>
                   <td>
                      <a href="#" data-type="select" :data-pk="item.brand_id" data-name="cid" :data-value="item.category.id" class="editable editable-click">{{item.category.title}}</a>

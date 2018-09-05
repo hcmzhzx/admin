@@ -10,26 +10,7 @@
                <form class="form-inline">
                   <select name="partner_id" class="form-control">
                      <option value="">所属合作</option>
-                     <option value="1">快上三金钻</option>
-                     <option value="4">康婷高峰</option>
-                     <option value="5">壹家壹高峰</option>
-                     <option value="6">绿叶</option>
-                     <option value="7">经通天下</option>
-                     <option value="8">玻妃</option>
-                     <option value="9">首席事业</option>
-                     <option value="10">三金钻家园</option>
-                     <option value="11">水疗事业</option>
-                     <option value="12">TBS事业帮手</option>
-                     <option value="13">酸碱平助手</option>
-                     <option value="14">财富半岛</option>
-                     <option value="15">松花事业助手</option>
-                     <option value="16">灵芝事业</option>
-                     <option value="17">甘诺宝力事业助手</option>
-                     <option value="18">爱生活伙伴</option>
-                     <option value="20">量子健康</option>
-                     <option value="21">美体健康顾问</option>
-                     <option value="22">松花事业微站</option>
-                     <option value="23">159健康事业助手</option>
+                     <option v-for="item in partnerList" :key="item.value" :value="item.value">{{item.text}}</option>
                   </select>
                   <select name="condition" class="form-control">
                      <option value="account">账号</option>
@@ -60,7 +41,7 @@
                <tr>
                   <td>58</td>
                   <td>
-                     <a href="#" data-type="select" data-pk="58" data-name="partner_id" data-value="1" data-source="" class="editable editable-click">美体健康顾问</a>
+                     <a href="#" data-type="select" data-pk="58" data-name="partner_id" :data-source="JSON.stringify(partnerList)" data-value="" class="editable editable-click">美体健康顾问</a>
                   </td>
                   <td>
                      <a href="#" data-type="text" data-pk="58" data-name="account" class="editable editable-click">美体财务</a>
@@ -100,13 +81,18 @@
       data(){
          return {
             text: [{txt:'品牌设置', src:'brand_index'}, {txt:'合作名单', src:`partner_index?id=${this.$route.query.id}`}, {txt:'合作管理员'}],
-            ID: ''  // 品牌ID
+            ID: '',  // 品牌ID
+            partnerList:[], // 合作列表
          }
       },
       created(){
          const id = this.ID = this.$route.query.ID;
          console.log(id);
 
+         // 获取合作列表
+         this.$store.dispatch('PartnerData').then(res=>{
+            this.partnerList = res
+         });
       },
       updated(){
          const _this = this;
@@ -120,7 +106,7 @@
             }
          });
          // 编辑框
-         $('.table a[data-type!="select"][data-type]').editable({
+         $('.table a[data-type!="select"]').editable({
             emptytext: '--',
             success: function (res, value) {
                const name = this.getAttribute('data-name'), form={}, ID = this.getAttribute('data-pk');

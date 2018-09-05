@@ -26,12 +26,6 @@
             <button type="submit" class="btn btn-primary">提交</button>
          </form>
       </div>
-      <!--<div class="box list" style="width:98px;height:98px;" id="file0">
-         <img src="">
-         <i class="progress" style="width:100%;"></i>
-         <a href="javascript:;" class="preview trash">修改</a>
-         <input type="hidden" name="banner" value="banner/20180813/5b717340d8dea.jpg">
-      </div>-->
    </div>
 </template>
 
@@ -45,7 +39,7 @@
       },
       data(){
          return {
-            text: [{txt: '品牌设置', src: 'brand_index'}, {txt: '编辑品牌'}],
+            text: [{txt:'品牌设置', src:'brand_index'}, {txt:'编辑品牌'}],
             brandData: {},
             meta: {},
             UE:'',

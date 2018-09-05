@@ -57,7 +57,7 @@
             <table class="table table-bordered table-hover table-condensed table-striped">
                <thead>
                <tr class="active">
-                  <th style="width: 5em;"><label><input type="checkbox" id="choose-all">全选</label></th>
+                  <th style="width:5em;"><label><input type="checkbox" id="choose-all">全选</label></th>
                   <th>所属品牌</th>
                   <th>姓名</th>
                   <th>手机号码</th>
@@ -73,16 +73,18 @@
                <tr v-for="item in beginsaleList" :key="item.id">
                   <td><input type="checkbox" name="ids[]" :value="item.id"></td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click"></a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click">{{source(item.brand.title)}}</a>
                   </td>
                   <td>
                      <a href="#" data-type="text" :data-pk="item.id" data-name="name" class="editable editable-click">{{item.name}}</a>
                   </td>
                   <td>
-                     <a href="#" data-type="text" :data-pk="item.id" data-name="phone" class="editable editable-click">{{item.phone}}</a><i class="glyphicon glyphicon-ok" v-if="item.begin.is_tel" style="color: limegreen"></i>
+                     <a href="#" data-type="text" :data-pk="item.id" data-name="phone" class="editable editable-click">{{item.phone}}</a>
+                     <i class="glyphicon glyphicon-ok" v-if="item.begin.is_tel" style="color: limegreen"></i>
                   </td>
                   <td>
-                     <a href="#" data-type="text" :data-pk="item.id" data-name="wechat" class="editable editable-click">{{item.wechat}}</a><i class="glyphicon glyphicon-ok" v-if="item.begin.is_wechat" style="color: limegreen"></i>
+                     <a href="#" data-type="text" :data-pk="item.id" data-name="wechat" class="editable editable-click">{{item.wechat}}</a>
+                     <i class="glyphicon glyphicon-ok" v-if="item.begin.is_wechat" style="color: limegreen"></i>
                   </td>
                   <td>
                      <a href="#" data-type="text" :data-pk="item.id" data-name="qq" class="editable editable-click editable-empty">{{item.qq}}</a>
@@ -139,21 +141,28 @@
          }
       },
       created(){
+         const loading = this.$loading({
+            lock: true,
+            text: '加载中...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+         });
          // 售前列表
          this.$http.get('begin_sale?include=begin,brand').then(res=>{
             this.beginsaleList = res.data;
             this.meta = res.meta.pagination;
+            loading.close(); // 结束loading
          });
 
          // 获取品牌列表
          this.$store.dispatch('BrandsData').then(res=>{
             this.brandsList = res
-         })
+         });
 
          // 售前客服列表
          this.$store.dispatch('beginSale').then(res=>{
             this.beginList = res
-         })
+         });
       },
       updated(){
          const _this = this;
@@ -164,7 +173,7 @@
             success: function (res, val) {
                const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
                form[name] = val;
-               _this.$http.patch(`users/${ID}`,form)
+               _this.$http.patch(`users/${ID}`,form);
             }
          });
 
@@ -174,7 +183,7 @@
             success: function (res, val) {
                const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
                form[name] = val;
-               _this.$http.patch(`users/${ID}`,form)
+               _this.$http.patch(`users/${ID}`,form);
             }
          });
 
@@ -199,16 +208,6 @@
          });
       },
       methods:{
-         // 所属员工
-         their(data){
-            return data.map((item)=>{
-                let json={};
-                json.text = item.username;
-                json.value = item.id;
-                return json
-            })
-         },
-
          // 搜索
          sendForm1(e){
             this.currentPage = 1; // 重置分页
@@ -225,7 +224,7 @@
 
          //分配
          sendForm2(e){
-            let sel = e.target.querySelectorAll('select')[0],id= sel.value;
+            let sel = e.target.querySelectorAll('select')[0],admin_id= sel.value;
             let users = $('[name="ids[]"]').serializeArray().map((item)=>{
                 let arr = [];
                 arr.push(item.value);
@@ -237,7 +236,19 @@
                   message: '分配失败'
                });
             } else {
-               this.$http.post('begin_sale/distribution',{admin_id:id,users}).then(res=>{
+               const loading = this.$loading({
+                  lock: true,
+                  text: '加载中...',
+                  spinner: 'el-icon-loading',
+                  background: 'rgba(0, 0, 0, 0.7)'
+               });
+               this.$http.post('begin_sale/distribution',{admin_id,users}).then(res=>{
+                  this.beginsaleList = [];  // 清空数据更新页面
+                  this.$http.get('begin_sale?include=begin,brand').then(sale=>{
+                     this.beginsaleList = sale.data;
+                     this.meta = sale.meta.pagination;
+                     loading.close(); // 结束loading
+                  })
                   this.$message({
                      type: 'success',
                      message: res.message
@@ -251,7 +262,7 @@
             if(Object.keys(this.search).length == 0){
                this.$http.get(`begin_sale?include=begin,brand&page=${val}`).then(res=>{
                   this.beginsaleList = res.data;
-                  this.meta = res.meta.pagination;
+                  this.meta = res.meta.pagination
                })
             } else {
                this.$http.get(`begin_sale?include=begin,brand&brand_id=${this.search.brand_id}&admin_id=${this.search.admin_id}&service=${this.search.service}&distribution=${this.search.distribution}&member=${this.search.member}&date_type=${this.search.date_type}&start_at=${this.search.start_at}&end_at=${this.search.end_at}&sort_field=${this.search.sort_field}&search_type=${this.search.search_type}&key=${this.search.key}&page=${val}`).then(res=>{

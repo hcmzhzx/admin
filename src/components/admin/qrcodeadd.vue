@@ -66,8 +66,8 @@
       },
       data(){
          return {
-            text: [{txt: '客服二维码', src: 'admin_qrcode'}, {txt: '添加二维码'}],
-            brandsList: [],  // 品牌列表
+            text:[{txt:'客服二维码', src:'admin_qrcode'}, {txt:'添加二维码'}],
+            brandsList:[],  // 品牌列表
             qrcode:''  // 二维码图地址
          }
       },
@@ -127,8 +127,7 @@
                Formdata.forEach((item)=>{
                   Form[item.name] = item.value;
                });
-               console.log(Form);
-               /*this.$http.post('admin_qrcode',Form).then(res=>{
+               this.$http.post('admin_qrcode',Form).then(res=>{
                   this.$router.go(-1)
                }).catch(err=>{
                   console.log(err);
@@ -136,7 +135,7 @@
                      message: err,
                      type: 'warning'
                   })
-               })*/
+               })
             })
          }
       }

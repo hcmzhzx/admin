@@ -140,11 +140,6 @@
          })
       },
       methods:{
-         // 拼接首拼品牌名
-         source(text){
-            return `${this.PY(text).substr(0, 1)}.${text}`;
-         },
-
          // 删除合作
          del(id){
             this.$confirm('确定删除此记录?', {

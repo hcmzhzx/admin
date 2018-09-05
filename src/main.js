@@ -58,6 +58,11 @@ Vue.mixin({
          return makePy(str);
       },
 
+      // 拼接首拼品牌名
+      source(text){
+         return `${this.PY(text).substr(0, 1)}.${text}`;
+      },
+
       // 删除上传的图片
       delImg(ele,callback){
           this.$confirm('确定删除这一项', {
@@ -72,7 +77,27 @@ Vue.mixin({
             });
             callback();
          }).catch(()=>{});
-      }
+      },
+
+      // 所属员工
+      their(data){
+         return data.map((item)=>{
+            let json={};
+            json.text = item.username;
+            json.value = item.id;
+            return json
+         })
+      },
+
+      // 行求和
+      rowTotal(item){
+         let arrNuber = Object.values(item).filter((item) => {
+            return Number.isFinite(item);
+         });
+         return arrNuber.reduce((prev, cur) => {
+            return prev + cur
+         })
+      },
    }
 })
 

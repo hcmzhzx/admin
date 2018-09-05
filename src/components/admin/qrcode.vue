@@ -123,19 +123,6 @@
          })
       },
       methods:{
-         // 拼接首拼.品牌名
-         source(selec){return `${this.PY(selec).substr(0, 1)}.${selec}`},
-
-         // 所属员工
-         their(data){
-            return data.map((item)=>{
-               let json={};
-               json.text = item.username;
-               json.value = item.id;
-               return json
-            })
-         },
-
          // 搜索
          sendForm(e){
             let inputs = e.target.querySelectorAll('select'),posts = {};

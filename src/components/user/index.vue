@@ -56,7 +56,7 @@
                <tr v-for="item in userList" :key="item.id">
                   <td>{{item.id}}</td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click"></a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click">{{source(item.brand.title)}}</a>
                   </td>
                   <td>
                      <a href="#" data-type="select" :data-pk="item.id" data-name="partner_id" :data-source="JSON.stringify(partnerList)" :data-value="item.partner.id" class="editable editable-click">{{item.partner.name}}</a>
@@ -139,10 +139,17 @@
          }
       },
       created(){
+         const loading = this.$loading({
+            lock: true,
+            text: '加载中...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+         });
          // 获取会员列表
          this.$http.get('users?include=brand,partner,dealer,parent').then(res=>{
             this.userList = res.data;
             this.meta = res.meta.pagination;
+            loading.close(); // 结束loading
          });
 
          // 获取品牌列表
@@ -153,6 +160,37 @@
          // 获取合作列表
          this.$store.dispatch('PartnerData').then(res=>{
             this.partnerList = res
+         });
+
+         const _this = this;
+         this.$nextTick(()=>{
+            setTimeout(()=>{
+               $('.table a[data-type="select"][data-name="dealer_id"]').editable({
+                  emptytext: '--',
+                  showbuttons: false,
+                  source: function () {
+                     console.log(this);
+                     let json = $.ajax({
+                        type:'get',
+                        async:false,
+                        headers:{'Authorization':localStorage.getItem('access_token')},
+                        url:`${API_URL}/admin/users?include=brand,partner,dealer,parent&partner_id=${this.getAttribute('data-pk')}&type=1`,
+                        success:function(data){return data}
+                     });
+                     return JSON.stringify(json.responseJSON.data.map((item)=>{
+                        let json={};
+                        json.text = item.name;
+                        json.value = item.id;
+                        return json;
+                     }))
+                  },
+                  success: function (res, val) {
+                     const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
+                     form[name] = val;
+                     //_this.$http.patch(`users/${ID}`,form)  users?include=brand,partner,dealer,parent&partner_id=${id}&type=1
+                  }
+               })
+            },500)
          })
       },
       updated(){

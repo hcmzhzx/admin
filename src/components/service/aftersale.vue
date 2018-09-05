@@ -9,23 +9,23 @@
                      <option value="">所属品牌</option>
                      <option :value="item.value" v-for="item in brandsList" :key="item.value">{{item.text}}</option>
                   </select>
-                  <select name="service_type" class="form-control">
+                  <select name="service" class="form-control">
                      <option value="">服务情况</option>
-                     <option value="1">未服务</option>
-                     <option value="2">已服务</option>
+                     <option value="0">未服务</option>
+                     <option value="1">已服务</option>
                   </select>
                   <select name="sort_field" class="form-control">
                      <option value="u.up_time">开通时间倒序</option>
                      <option value="bs.add_time">分配时间倒序</option>
                      <option value="bs.service_time">服务时间倒序</option>
                   </select>
-                  <select name="condition" class="form-control">
+                  <select name="search_type" class="form-control">
                      <option value="phone">手机号码</option>
                      <option value="name">姓名</option>
                      <option value="wechat">微信号</option>
                   </select>
                   <div class="form-group">
-                     <input type="text" name="word" class="form-control">
+                     <input type="text" name="key" class="form-control">
                   </div>
                   <button type="submit" class="form-control btn btn-primary">查询</button>
                </form>
@@ -35,7 +35,7 @@
             <table class="table table-bordered table-hover table-striped">
                <thead>
                <tr class="active">
-                  <th style="width: 5em">ID</th>
+                  <th style="width:8em">ID</th>
                   <th>所属品牌</th>
                   <th>姓名</th>
                   <th>手机号码</th>
@@ -47,11 +47,43 @@
                </tr>
                </thead>
                <tbody>
+               <tr v-for="(item,index) in aftersaleList" :key="item.id">
+                  <td>{{item.id}}</td>
+                  <td>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand_id" class="editable editable-click">{{source(item.brand.title)}}</a>
+                  </td>
+                  <td>{{item.name}}</td>
+                  <td>
+                     {{item.phone}}
+                     <i class="glyphicon glyphicon-ok" style="color:limegreen" v-if="item.after.is_tel"></i>
+                     <button type="button" class="btn btn-xs contact" :data-id="item.id" @click="mark(item.id,'is_tel',index)" data-field="is_tel" data-type="beginsale" v-else><i class="glyphicon glyphicon-ok"></i></button>
+                  </td>
+                  <td>
+                     {{item.wechat}}
+                     <i class="glyphicon glyphicon-ok" style="color:limegreen" v-if="item.after.is_wechat"></i>
+                     <button type="button" class="btn btn-xs contact" :data-id="item.id" @click="mark(item.id,'is_wechat',index)" data-field="is_wechat" data-type="beginsale" v-else><i class="glyphicon glyphicon-ok"></i></button>
+                  </td>
+                  <td>{{item.qq}}</td>
+                  <td>{{item.created_at}}</td>
+                  <td>
+                     <a href="#" data-type="textarea" :data-pk="item.id" data-name="comment" class="editable editable-pre-wrapped editable-click">{{item.after.comment}}</a>
+                  </td>
+                  <td>
+                     <a class="btn btn-primary btn-xs" href="http://ly.wasd1.com/contact/index/pid/73487.html" target="_blank">留言</a>
+                  </td>
+               </tr>
                </tbody>
             </table>
-            <footer>
-               <div class="page"></div>
-            </footer>
+            <div class="flexitem end block">
+               <el-pagination
+                  @current-change="pageChange"
+                  :current-page.sync="currentPage"
+                  :page-size="meta.per_page"
+                  layout="prev, pager, next, jumper"
+                  :background=true
+                  :total="meta.total">
+               </el-pagination>
+            </div>
          </div>
       </div>
    </div>
@@ -68,7 +100,7 @@
          return {
             text: [{txt:'售后名单'}],
             brandsList: [], // 品牌列表
-            searchList:[],  // 售后总列表
+            aftersaleList:[],  // 售后总列表
 
             search:{},  // 搜索
             meta: {},  // 分页列表
@@ -76,16 +108,23 @@
          }
       },
       created(){
+         const loading = this.$loading({
+            lock: true,
+            text: '加载中...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+         });
          // 售后列表
-         this.$http.get('after_sale?include=begin,brand').then(res=>{
-            this.searchList = res.data;
+         this.$http.get('after_sale/own_sale?include=after,brand').then(res=>{
+            this.aftersaleList = res.data;
             this.meta = res.meta.pagination;
-         })
+            loading.close(); // 结束loading
+         });
 
          // 获取品牌列表
          this.$store.dispatch('BrandsData').then(res=>{
-            this.brandsList = res
-         })
+            this.brandsList = res;
+         });
       },
       updated(){
          const _this = this;
@@ -94,7 +133,7 @@
             emptytext: '--',
             showbuttons: false,
             success: function (res, val) {
-               const ID = this.getAttribute('data-pk');
+               const name = this.getAttribute('data-name'), form = {}, ID = this.getAttribute('data-pk');
 
             }
          });
@@ -110,27 +149,60 @@
          })
       },
       methods: {
+         // 标记
+         mark(id,type,index){
+            this.$http.post(`after_sale/service/${id}`,{type:type}).then(()=>{
+               this.aftersaleList[index].begin[type] = 1
+            })
+         },
+
          // 搜索
          sendForm(e){
             this.currentPage = 1;
+            const loading = this.$loading({
+               lock: true,
+               text: '加载中...',
+               spinner: 'el-icon-loading',
+               background: 'rgba(0, 0, 0, 0.7)'
+            });
             let inputs = e.target.querySelectorAll('select,input'), posts = {};
             inputs.forEach((item) => {
                posts[item.getAttribute('name')] = item.value
             });
-            console.log(posts);
             this.search = posts;
-
+            this.$http.get(`after_sale/own_sale?include=after,brand&brand_id=${posts.brand_id}&service=${posts.service}&sort_field=${posts.sort_field}&search_type=${posts.search_type}$key=${posts.key}`).then(res => {
+               this.aftersaleList = res.data;
+               this.meta = res.meta.pagination;
+               loading.close(); // 结束loading
+            }).catch(()=>{
+               loading.close(); // 结束loading
+               this.$message({
+                  message: '请求出错',
+                  type: 'warning'
+               });
+            })
          },
 
          // 分页
-         pageChange(val){
-            if(Object.keys(this.search).length == 0){
-               this.$http.get(`after_sale?include=begin,brand&page=${val}`).then(res=>{
-                  this.searchList = res.data;
+         pageChange(pag){
+            const loading = this.$loading({
+               lock: true,
+               text: '加载中...',
+               spinner: 'el-icon-loading',
+               background: 'rgba(0, 0, 0, 0.7)'
+            });
+            if(Object.keys(this.search).length == 0) {
+               this.$http.get(`after_sale/own_sale?include=after,brand&page=${pag}`).then(res => {
+                  this.aftersaleList = res.data;
                   this.meta = res.meta.pagination;
+                  loading.close(); // 结束loading
                })
             } else {
-
+               this.$http.get(`after_sale/own_sale?include=after,brand&brand_id=${this.search.brand_id}&service=${this.search.service}&sort_field=${this.search.sort_field}&search_type=${this.search.search_type}$key=${this.search.key}&page=${pag}`).then(res => {
+                  this.aftersaleList = res.data;
+                  this.meta = res.meta.pagination;
+                  loading.close(); // 结束loading
+               })
             }
          }
       }

@@ -45,7 +45,7 @@
                <ul id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                   <li><a href="javascript:;" @click="$router.push({name:'service_beginsales'})" title="售前总名单" class="ajax-call">售前总名单</a></li>
                   <li><a href="javascript:;" @click="$router.push({name:'service_beginsale'})" title="售前名单" class="ajax-call">售前名单</a></li>
-                  <li><a href="javascript:;" @click="$router.push({name:'service_search'})" title="会员搜索" class="ajax-call">会员搜索</a></li>
+                  <!--<li><a href="javascript:;" @click="$router.push({name:'service_search'})" title="会员搜索" class="ajax-call">会员搜索</a></li>-->
                </ul>
             </li>
             <li class="panel">

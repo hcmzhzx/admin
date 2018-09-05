@@ -62,7 +62,6 @@
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.7)'
          });
-
          this.$http.get(`report/after_sale_count`).then(res => {
             for (let [key, val] of Object.entries(res)) {
                key == 0 ? this.dateline = val : this.reportList[key] = val;
@@ -71,16 +70,6 @@
          })
       },
       methods: {
-         // 行求和
-         rowTotal(item){
-            let arrNuber = Object.values(item).filter((item) => {
-               return Number.isFinite(item);
-            });
-            return arrNuber.reduce((prev, cur) => {
-               return prev + cur
-            })
-         },
-
          //搜索
          sendForm(e){
             let inputs = e.target.querySelectorAll('select,input'), posts = {};

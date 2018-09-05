@@ -70,7 +70,7 @@
                <tr v-for="item in searchList" :key="item.id">
                   <td><input type="checkbox" name="ids[]" :value="item.id"></td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click"></a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click">{{source(item.brand.title)}}</a>
                   </td>
                   <td>
                      <a href="#" data-type="text" :data-pk="item.id" data-name="name" class="editable editable-click">{{item.name}}</a>
@@ -137,43 +137,64 @@
          }
       },
       created(){
+         const loading = this.$loading({
+            lock: true,
+            text: '加载中...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+         });
          // 售后列表
          this.$http.get('after_sale?include=after,brand').then(res=>{
             this.searchList = res.data;
             this.meta = res.meta.pagination;
+            loading.close(); // 结束loading
          });
 
          // 获取品牌列表
          this.$store.dispatch('BrandsData').then(res=>{
             this.brandsList = res
-         })
+         });
 
          // 售后客服列表
          this.$store.dispatch('afterSale').then(res=>{
             this.afterList = res
-         })
+         });
       },
       updated(){
          const _this = this;
          // 下拉框
-         $('.table a[data-type="select"][data-name!="dealer_id"]').editable({
+         $('.table a[data-type="select"][data-name!="admin_id"]').editable({
             emptytext: '--',
             showbuttons: false,
             success: function (res, val) {
                const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
                form[name] = val;
-               _this.$http.patch(`users/${ID}`,form)
-
+               _this.$http.patch(`users/${ID}`,form);
             }
          });
 
          // 编辑框
-         $('.table a[data-type!="select"][data-type]').editable({
+         $('.table a[data-type!="select"]').editable({
             emptytext: '--',
             success: function (res, val) {
                const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
                form[name] = val;
-               _this.$http.patch(`users/${ID}`,form)
+               _this.$http.patch(`users/${ID}`,form);
+            }
+         });
+
+         // 所属员工
+         $('.table a[data-type="select"][data-name="admin_id"]').editable({
+            emptytext: '--',
+            showbuttons: false,
+            success: function (res, val) {
+               const ID = this.getAttribute('data-pk'), users=[ID];
+               _this.$http.post('after_sale/distribution',{admin_id:val,users}).then(res=>{
+                  _this.$message({
+                     type: 'success',
+                     message: res.message
+                  });
+               })
             }
          });
 
@@ -183,16 +204,6 @@
          })
       },
       methods: {
-         // 所属员工
-         their(data){
-            return data.map((item)=>{
-               let json={};
-               json.text = item.username;
-               json.value = item.id;
-               return json
-            })
-         },
-
          // 搜索
          sendForm1(e){
             this.currentPage = 1;
@@ -209,7 +220,7 @@
 
          //分配
          sendForm2(e){
-            let sel = e.target.querySelectorAll('select')[0],id= sel.value;
+            let sel = e.target.querySelectorAll('select')[0],admin_id= sel.value;
             let users = $('[name="ids[]"]').serializeArray().map((item)=>{
                let arr = [];
                arr.push(item.value);
@@ -221,7 +232,19 @@
                   message: '分配失败'
                });
             } else {
-               this.$http.post('after_sale/distribution',{admin_id:id,users}).then(res=>{
+               const loading = this.$loading({
+                  lock: true,
+                  text: '加载中...',
+                  spinner: 'el-icon-loading',
+                  background: 'rgba(0, 0, 0, 0.7)'
+               });
+               this.$http.post('after_sale/distribution',{admin_id,users}).then(res=>{
+                  this.searchList = []; // 清空数据更新页面
+                  this.$http.get('after_sale?include=after,brand').then(sale=>{
+                     this.searchList = sale.data;
+                     this.meta = sale.meta.pagination;
+                     loading.close(); // 结束loading
+                  })
                   this.$message({
                      type: 'success',
                      message: res.message

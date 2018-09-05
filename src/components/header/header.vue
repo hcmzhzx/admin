@@ -4,7 +4,7 @@
       <div class="btn-group pull-right op">
          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <img src="http://pic.zhzxr.com/upic/nopic.png" alt="我的头像">
-            <span class="welcome">胡成铭</span>
+            <span class="welcome">{{userData.username}}</span>
             <span class="caret"></span>
          </button>
          <ul class="dropdown-menu">
@@ -16,7 +16,16 @@
 
 <script>
    export default {
-
+      data(){
+         return{
+            userData:{}  // 用户信息
+         }
+      },
+      created(){
+         this.$store.dispatch('userInfo').then(user=>{
+            this.userData = user
+         })
+      }
    }
 </script>
 

@@ -59,7 +59,7 @@
                <tr v-for="item in orderList" :key="item.id">
                   <td>{{item.order}}</td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click">{{item.brand.title}}</a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="brand_id" :data-source="JSON.stringify(brandsList)" :data-value="item.brand.id" class="editable editable-click">{{source(item.brand.title)}}</a>
                   </td>
                   <td>
                      <a href="#" data-type="select" :data-pk="item.id" data-name="partner_id" :data-source="JSON.stringify(partnerList)" :data-value="item.partner.id" class="editable editable-click">{{item.partner.name}}</a>
@@ -68,11 +68,11 @@
                   <td>{{item.user.phone}}</td>
                   <td>{{item.attr}}</td>
                   <td>{{item.price}}</td>
-                  <td><a href="#" data-type="text" :data-pk="item.id" data-name="dealer_award" data-value="0" class="editable editable-click">{{item.dealer_award}}元</a>
+                  <td><a href="#" data-type="text" :data-pk="item.id" data-name="dealer_award" :data-value="item.dealer_award" class="editable editable-click">{{item.dealer_award}}元</a>
                   </td>
-                  <td>{{item.user.normal_name}}<a href="#" data-type="text" :data-pk="item.id" data-name="normal_award" data-value="119" class="editable editable-click" v-if="item.normal_award || item.user.normal_name">[{{item.normal_award}}元]</a></td>
+                  <td>{{item.user.dealer_name}}<a href="#" data-type="text" :data-pk="item.id" data-name="normal_award" :data-value="item.normal_award" v-if="item.user.dealer_name || item.normal_award" class="editable editable-click">[{{item.normal_award}}元]</a></td>
                   <td>
-                     <a href="#" data-type="select" data-url="" :data-pk="item.id" data-name="admin_id" :data-source="JSON.stringify(their(beginList))" :data-value="item.user.begin_admin_id" class="editable editable-click"></a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="admin_id" :data-source="JSON.stringify(their(beginList))" :data-value="item.user.begin_admin_id" class="editable editable-click"></a>
                   </td>
                   <td>{{item.user.create_time}}</td>
                   <td>{{item.create_time}}</td>
@@ -116,10 +116,17 @@
          }
       },
       created(){
+         const loading = this.$loading({
+            lock: true,
+            text: '加载中...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+         });
          // 订单列表
          this.$http.get('order?include=user,brand,partner').then(res=>{
             this.orderList = res.data;
             this.meta = res.meta.pagination;
+            loading.close(); // 结束loading
          });
 
          // 获取员工列表
@@ -146,9 +153,7 @@
             success: function (res, val) {
                const name = this.getAttribute('data-name'), form = {};
                form[name] = val;
-               _this.$http.patch(`users`,form).then(res=>{
-                  console.log(res);
-               })
+               _this.$http.patch(`users`,form)
             }
          });
 
@@ -158,9 +163,7 @@
             success: function (res, val) {
                const name = this.getAttribute('data-name'), form = {};
                form[name] = val;
-               _this.$http.patch(`users`,form).then(res=>{
-                  console.log(res);
-               })
+               _this.$http.patch(`users`,form)
             }
          })
       },
@@ -198,7 +201,7 @@
                   this.meta = res.meta.pagination;
                });
             } else {
-               this.$http.get(`order?include=user,brand,partner&brand_id=${posts.brand_id}&partner_id=${posts.partner_id}&admin_id=${posts.admin_id}&pay_status=${posts.pay_status}&order=${posts.order}&search_type=${posts.search_type}&key=${posts.key}&page=${val}`).then(res=>{
+               this.$http.get(`order?include=user,brand,partner&brand_id=${this.search.brand_id}&partner_id=${this.search.partner_id}&admin_id=${this.search.admin_id}&pay_status=${this.search.pay_status}&order=${this.search.order}&search_type=${this.search.search_type}&key=${this.search.key}&page=${val}`).then(res=>{
                   this.userList = res.data;
                   this.meta = res.meta.pagination;
                })
