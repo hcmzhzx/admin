@@ -134,7 +134,7 @@
                });
                let Form = {};
                Formdata.forEach((item)=>{
-                  Form[item.name] = item.value;
+                  Form[item.name] = item.value.trim();
                });
                // 上传loading
                const loading = this.$loading({

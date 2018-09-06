@@ -5,18 +5,21 @@
          <form class="post" @submit.prevent="sendForm">
             <div class="form-group">
                <label for="title">品牌名</label>
-               <input type="text" class="form-control small" name="title" id="title" :value="brandData.title" data-rule="*" data-errmsg="品牌必须填写" data-sync="true">
+               <input type="text" class="form-control small" ref="title" name="title" v-model="brandData.title" data-rule="*" data-errmsg="品牌必须填写" data-sync="true">
             </div>
             <div class="form-group">
                <label>banner横幅</label>
                <div class="uploader">
-                  <div class="box list">
-                     <input type="hidden" name="banner" :value="Substr(brandData.banner)">
-                     <img :src="brandData.banner">
+                  <div class="lists">
+                     <div class="box list">
+                        <input type="hidden" name="banner" :value="Substr(brandData.banner)">
+                        <img :src="brandData.banner">
+                     </div>
+                     <div class="box picker">
+                        <input type="file" accept="image/*" class="upfile" data-type="brand" data-authority="brand_upload"><span>点击选择图片</span>
+                     </div>
                   </div>
-                  <div class="box picker" data-type="brand" data-authority="brand_upload">
-                     <input type="file" accept="image/*" class="upfile"><span>点击选择图片</span>
-                  </div>
+                  <input type="hidden" :value="banner" data-rule="*" data-errmsg="banner图必须上传" data-sync="true">
                </div>
             </div>
             <div class="form-group" style="">
@@ -40,12 +43,13 @@
       data(){
          return {
             text: [{txt:'品牌设置', src:'brand_index'}, {txt:'编辑品牌'}],
-            brandData: {},
-            meta: {},
+            brandData:{},
             UE:'',
             ID:'',
+            banner:'',  // banner图地址
 
-            currentPage: 1
+            meta:{},
+            currentPage:1
          }
       },
       created(){
@@ -56,6 +60,7 @@
                _this.UE = UE.getEditor('editor',{enableAutoSave:false,autoHeightEnabled:false});
                _this.$http.get(`brands/${id}`).then(brand => {
                   _this.brandData = brand;
+                  _this.banner = _this.Substr(brand.banner);
                   // 设置编辑器内容
                   _this.UE.setContent(brand.intro)
                })
@@ -65,42 +70,21 @@
             $('.picker input[type=file]').change(function(e){
                if(this.files.length == 0) return;
                const files = this.files[0];
-               const ele = this.parentNode, type = ele.getAttribute('data-type'), authority = ele.getAttribute('data-authority');
+               const ele = this.parentNode, type = this.getAttribute('data-type'), authority = this.getAttribute('data-authority');
                $(ele).siblings().remove();
                $(ele).before(`<div class="box list"><img src="${window.URL.createObjectURL(files)}"><i class="progress"></i><a href="javascript:;" class="preview">上传中</a><input type="hidden" name="banner" value=""></div>`);
                _this.readFile(type,authority,files,$(ele.parentNode.firstElementChild));
                $(ele.parentNode.firstElementChild).append(`<span style="color:#ccc;font-size:0.8em;">预览中</span>`);
                // 修改删除图片
                $('#main').on('click','.trash',function (){
-                  _this.delImg($(this))
+                  _this.delImg($(this),()=>{
+                     _this.banner=''
+                  })
                })
             })
          })
       },
       methods: {
-         sendForm(e){
-            new CheckForm(e,err=>{
-               this.$message({
-                  message: err,
-                  type: 'warning'
-               });
-            },()=>{
-               let json = {};
-               // input 内容
-               [...e.target.querySelectorAll('input[type=text],input[type=hidden]')].filter((item)=>{
-                  return item.value != ''
-               }).forEach((item)=>{
-                  json[item.name] = item.value;
-               });
-               // 获得编辑器内容 及 首拼
-               const contact = this.UE.getContent(), py = this.PY(e.target.querySelector('#title').value);
-
-               // 发送修改请求
-               this.$http.patch(`brands/${this.ID}`,{title:json.title, banner:json.banner, pinyin:py, intro:contact}).then(()=>{
-                  this.$router.go(-1);
-               })
-            })
-         },
          // 更换图片请求
          readFile(type,authority,files,ev){
             const form = new FormData();
@@ -108,9 +92,47 @@
             form.append('image',files);
             form.append('authority',authority);
             this.$http.post('image',form).then(url=>{
-               ev.find('input[type=hidden]').val(this.Substr(url.path));
+               this.banner = url.path;
+               ev.find('input[type=hidden]').val(url.path);
                ev.find('span').remove();
                ev.find('a.preview').addClass('trash').text('修改');
+            })
+         },
+
+         // 表单验证提交
+         sendForm(e){
+            new CheckForm(e,err=>{
+               this.$message({
+                  message: err,
+                  type: 'warning'
+               });
+            },()=>{
+               let form = {
+                  pinyin:'',
+                  intro:''
+               };
+               form.pinyin = this.PY(this.$refs.title.value.trim());  // 首拼
+               // input 内容
+               [...e.target.querySelectorAll('input[type=text],input[type=hidden]')].filter((item)=>{
+                  return item.name != ''
+               }).forEach((item)=>{
+                  form[item.name] = item.value.trim();
+               });
+               // 获得编辑器内容
+               if(this.UE.getContent()){
+                  form.intro = this.UE.getContent();
+               } else {
+                  this.$message({
+                     message: '公司介绍不能为空',
+                     type: 'warning'
+                  });
+                  this.UE.focus(true); // 获取编辑器的焦点
+                  return;
+               }
+               // 发送修改请求
+               this.$http.patch(`brands/${this.ID}`,form).then(()=>{
+                  this.$router.go(-1);
+               })
             })
          }
       }

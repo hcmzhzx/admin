@@ -75,7 +75,7 @@
                });
                let Form = {};
                Formdata.forEach((item) => {
-                  Form[item.name] = item.value;
+                  Form[item.name] = item.value.trim();
                });
                Form.brand_id = this.ID;  //商品ID
                this.$http.post('product_category',Form).then(res=>{

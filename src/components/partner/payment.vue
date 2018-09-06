@@ -26,7 +26,7 @@
                <tr v-for="item in dataList" :key='item.id'>
                   <td>{{item.id}}</td>
                   <td>
-                     <a href="#" data-type="select" :data-pk="item.id" data-name="partner_id" :data-source="JSON.stringify(source)" :data-value="item.partner_id" class="editable editable-click">{{partner(item.partner_id)}}</a>
+                     <a href="#" data-type="select" :data-pk="item.id" data-name="partner_id" :data-source="JSON.stringify(partnerList)" :data-value="item.partner_id" class="editable editable-click">{{partner(item.partner_id)}}</a>
                   </td>
                   <td>
                      <a href="#" data-type="text" :data-pk="item.id" data-name="title" class="editable editable-click">{{item.title}}</a>
@@ -64,24 +64,23 @@
       },
       data(){
          return {
-            text: [{txt:'品牌设置', src:'brand_index'}, {txt:'合作名单', src:`partner_index`}, {txt:'会员价格'}],
+            text: [{txt:'品牌设置', src:'brand_index'}, {txt:'合作名单', src:`partner_index?id=${this.$route.query.id}`}, {txt:'会员价格'}],
             ID: '',  // 合作ID
-            dataList:[],
-            source:[]  // 选择框内容
+            dataList:{},
+            partnerList:[]  // 合作列表
          }
       },
       created(){
-         this.ID = this.$route.query.ID;
-
+         const ID = this.ID = this.$route.query.ID;
          // 获取合作列表
          this.$store.dispatch('PartnerData').then(res=>{
-            this.source = res
-         })
+            this.partnerList = res
+         });
 
          // 请求会员价格列表
-         this.$http.get(`partner/member?partner_id=${this.ID}`).then(res=>{
+         this.$http.get(`partner/member?partner_id=${ID}`).then(res=>{
             this.dataList = res.payments
-         })
+         });
       },
       updated(){
          const _this = this;
@@ -90,7 +89,7 @@
             emptytext: '--',
             showbuttons: false,
             success: function (res, val) {
-               let value = _this.source.filter((item)=>{
+               let value = _this.partnerList.filter((item)=>{
                   return item.value == val
                })[0].value;
                const ID = this.getAttribute('data-pk');
@@ -109,12 +108,12 @@
          })
       },
       methods:{
-         // 所属合作名称
+         // 所属合作名称return
          partner(id){
-            if(this.source.length == 0) return
-            return this.source.filter((item)=>{
+            if(this.partnerList.length == 0) return;
+            let a = this.partnerList.filter((item)=>{
                return item.value == id
-            })[0].text;
+            });
          },
 
          // 删除会员价格

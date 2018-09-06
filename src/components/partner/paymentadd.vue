@@ -44,7 +44,8 @@
                {txt:'品牌设置', src:'brand_index'},
                {txt:'合作名单', src:`partner_index`},
                {txt:'会员价格', src:`partner_payment`},
-               {txt:'添加会员价格'}],
+               {txt:'添加会员价格'}
+            ],
             ID:'' // 品牌id
          }
       },
@@ -65,10 +66,10 @@
                });
                let Form = {};
                Formdata.forEach((item)=>{
-                  Form[item.name] = item.value;
+                  Form[item.name] = item.value.trim();
                });
                this.$http.post('partner/member',Form).then(res=>{
-                  this.$router.go(-1)
+                  this.$router.go(-1);
                })
             })
          }

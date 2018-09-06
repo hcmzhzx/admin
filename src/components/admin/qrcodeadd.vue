@@ -6,30 +6,8 @@
             <div class="form-group">
                <label for="admin_id">所属客服</label>
                <select name="admin_id" id="admin_id" class="form-control small" data-rule="*" data-errmsg="所属客服必须选择" data-sync="true">
-                  <option value="0">请选择</option>
-                  <option value="17">洪浩明</option>
-                  <option value="34">伍文波</option>
-                  <option value="35">洪江明</option>
-                  <option value="36">覃峥嵘</option>
-                  <option value="38">冯美娇</option>
-                  <option value="39">皮蝉</option>
-                  <option value="40">李书琴</option>
-                  <option value="43">肖添禹</option>
-                  <option value="44">王世富</option>
-                  <option value="45">刘嘉伟</option>
-                  <option value="50">余腊</option>
-                  <option value="52">付正伟</option>
-                  <option value="53">赖海燕</option>
-                  <option value="55">张雄军</option>
-                  <option value="56">刘威</option>
-                  <option value="60">周超</option>
-                  <option value="61">邱德奇</option>
-                  <option value="62">张永</option>
-                  <option value="63">贺乐乐</option>
-                  <option value="64">李玉流</option>
-                  <option value="65">何强</option>
-                  <option value="66">李叶山</option>
-                  <option value="67">鲍伟明</option>
+                  <option value="">请选择</option>
+                  <option :value="item.id" v-for="item in beginList" :key="item.id">{{item.username}}</option>
                </select>
             </div>
             <div class="form-group">
@@ -47,9 +25,9 @@
                         <input type="file" accept="image/*" class="upfile" data-type="qrcode" data-authority="qrcode_add"><span>点击选择图片</span>
                      </div>
                   </div>
+                  <input type="hidden" :value="qrcode" data-rule="*" data-errmsg="二维码必须填写" data-sync="true">
                </div>
             </div>
-            <input type="hidden" class="qrcode" :value="qrcode" data-rule="*" data-errmsg="二维码必须填写" data-sync="true">
             <button type="submit" class="btn btn-primary">提交</button>
          </form>
       </div>
@@ -68,10 +46,16 @@
          return {
             text:[{txt:'客服二维码', src:'admin_qrcode'}, {txt:'添加二维码'}],
             brandsList:[],  // 品牌列表
+            beginList:[],  // 售前客服列表
             qrcode:''  // 二维码图地址
          }
       },
       created(){
+         // 获取客服列表
+         this.$store.dispatch('beginSale').then(res=>{
+            this.beginList = res
+         });
+
          // 获取品牌列表
          this.$store.dispatch('BrandsData').then(res=>{
             this.brandsList = res
@@ -125,7 +109,7 @@
                });
                let Form = {};
                Formdata.forEach((item)=>{
-                  Form[item.name] = item.value;
+                  Form[item.name] = item.value.trim();
                });
                this.$http.post('admin_qrcode',Form).then(res=>{
                   this.$router.go(-1)

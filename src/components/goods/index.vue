@@ -115,10 +115,17 @@
          }
       },
       created(){
+         const loading = this.$loading({
+            lock: true,
+            text: '加载中...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+         });
          // 商品列表
          this.$http.get('product?include=brand,category').then(res=>{
             this.goodsList = res.data;
             this.meta = res.meta.pagination;
+            loading.close(); // 结束loading
          });
 
          // 获取品牌列表

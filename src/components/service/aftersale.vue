@@ -56,12 +56,12 @@
                   <td>
                      {{item.phone}}
                      <i class="glyphicon glyphicon-ok" style="color:limegreen" v-if="item.after.is_tel"></i>
-                     <button type="button" class="btn btn-xs contact" :data-id="item.id" @click="mark(item.id,'is_tel',index)" data-field="is_tel" data-type="beginsale" v-else><i class="glyphicon glyphicon-ok"></i></button>
+                     <button type="button" class="btn btn-xs contact" :data-id="item.id" @click="mark(item.id,'is_tel',index)" data-field="is_tel" data-type="aftersale" v-else><i class="glyphicon glyphicon-ok"></i></button>
                   </td>
                   <td>
                      {{item.wechat}}
                      <i class="glyphicon glyphicon-ok" style="color:limegreen" v-if="item.after.is_wechat"></i>
-                     <button type="button" class="btn btn-xs contact" :data-id="item.id" @click="mark(item.id,'is_wechat',index)" data-field="is_wechat" data-type="beginsale" v-else><i class="glyphicon glyphicon-ok"></i></button>
+                     <button type="button" class="btn btn-xs contact" :data-id="item.id" @click="mark(item.id,'is_wechat',index)" data-field="is_wechat" data-type="aftersale" v-else><i class="glyphicon glyphicon-ok"></i></button>
                   </td>
                   <td>{{item.qq}}</td>
                   <td>{{item.created_at}}</td>
@@ -134,17 +134,18 @@
             showbuttons: false,
             success: function (res, val) {
                const name = this.getAttribute('data-name'), form = {}, ID = this.getAttribute('data-pk');
-
+               form[name] = val;
+               _this.$http.patch(`users/${ID}`,form)
             }
          });
 
          // 编辑框
          $('.table a[data-type!="select"][data-type]').editable({
             emptytext: '--',
-            success: function (res, value) {
+            success: function (res, val) {
                const name = this.getAttribute('data-name'), form = {}, ID = this.getAttribute('data-pk');
-               form[name] = value;
-               console.log(form);
+               form[name] = val;
+               _this.$http.post(`after_sale/comment/${ID}`,form)
             }
          })
       },
@@ -152,7 +153,7 @@
          // 标记
          mark(id,type,index){
             this.$http.post(`after_sale/service/${id}`,{type:type}).then(()=>{
-               this.aftersaleList[index].begin[type] = 1
+               this.aftersaleList[index].after[type] = 1
             })
          },
 

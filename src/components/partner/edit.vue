@@ -5,30 +5,30 @@
          <form method="post" class="post" @submit.prevent="sendForm">
             <div class="form-group">
                <label for="brand_id">所属品牌</label>
-               <select name="brand_id" id="brand_id" class="form-control small" data-rule="*" data-errmsg="所属品牌必须选择" data-sync="true">
+               <select name="brand_id" id="brand_id" class="form-control small" v-model="brand_id" data-rule="*" data-errmsg="所属品牌必须选择" data-sync="true">
                   <option value="0">请选择所属品牌</option>
-                  <option v-for="item in brandsList" :key="item.value" :value="item.value" :selected="item.value == brand_id">{{item.text}}</option>
+                  <option v-for="item in brandsList" :key="item.value" :value="item.value">{{item.text}}</option>
                </select>
             </div>
             <div class="form-group">
                <label for="site_title">网站名称</label>
-               <input type="text" class="form-control small" name="site_title" id="site_title" :value="partner.site_title" data-rule="*" data-errmsg="网站名称必须填写" data-sync="true">
+               <input type="text" class="form-control small" name="site_title" id="site_title" v-model="partner.site_title" data-rule="*" data-errmsg="网站名称必须填写" data-sync="true">
             </div>
             <div class="form-group">
                <label for="name">姓名</label>
-               <input type="text" id="name" class="form-control small" name="name" :value="partner.name" data-rule="*" data-errmsg="姓名必须填写" data-sync="true">
+               <input type="text" id="name" class="form-control small" name="name" v-model="partner.name" data-rule="*" data-errmsg="姓名必须填写" data-sync="true">
             </div>
             <div class="form-group">
                <label for="phone">客服号码</label>
-               <input type="text" class="form-control small" name="phone" id="phone" :value="partner.phone" data-rule="m" data-errmsg="请填写正确客服号码" data-sync="true">
+               <input type="text" class="form-control small" name="phone" id="phone" v-model="partner.phone" data-rule="m" data-errmsg="请填写正确客服号码" data-sync="true">
             </div>
             <div class="form-group">
                <label for="wechat">客服微信</label>
-               <input type="text" class="form-control small" name="wechat" id="wechat" :value="partner.wechat">
+               <input type="text" class="form-control small" name="wechat" id="wechat" v-model="partner.wechat">
             </div>
             <div class="form-group">
                <label for="fg_domain">前台域名</label>
-               <input type="text" class="form-control small" name="fg_domain" id="fg_domain" :value="partner.fg_domain" data-rule="*" data-errmsg="前台域名必须填写" data-sync="true">
+               <input type="text" class="form-control small" name="fg_domain" id="fg_domain" v-model="partner.fg_domain" data-rule="*" data-errmsg="前台域名必须填写" data-sync="true">
             </div>
             <div class="form-group">
                <label>logo图片</label>
@@ -78,7 +78,7 @@
                   </div>
                </div>
             </div>
-            <input type="hidden" class="logo" :value="logo" data-rule="*" data-errmsg="logo图必须填写" data-sync="true">
+            <input type="hidden" class="logo" v-model="logo" data-rule="*" data-errmsg="logo图必须填写" data-sync="true">
             <button type="submit" class="btn btn-primary">提交</button>
          </form>
       </div>
@@ -95,7 +95,7 @@
       },
       data(){
          return {
-            text: [{txt:'品牌设置', src:'brand_index'}, {txt:'合作名单', src:`partner_index`}, {txt: '编辑合作'}],
+            text: [{txt:'品牌设置', src:'brand_index'}, {txt:'合作名单', src:`partner_index?id=${this.$route.query.id}`}, {txt: '编辑合作'}],
             brandsList:[],   // 品牌列表
             brand_id:'', // 品牌id
             ID:'',       // 站点id
@@ -116,7 +116,7 @@
          const ID = this.ID = this.$route.query.ID;
          this.$http.get(`partner/${ID}`).then(partner=>{
             this.partner = partner;
-            this.cover = this.Substr(partner.logo);
+            this.logo = this.Substr(partner.logo);
          })
       },
       updated(){
@@ -168,7 +168,7 @@
                });
                let Form = {};
                Formdata.forEach((item)=>{
-                  Form[item.name] = item.value;
+                  Form[item.name] = item.value.trim();
                });
                this.$http.patch(`partner/${this.ID}`, Form).then(res=>{
                   this.$router.go(-1);

@@ -137,12 +137,11 @@
                   return item.value !== '' && item.name != 'editorValue';
                });
                Formdata.forEach((item)=>{
-                   Form[item.name] = item.value
+                   Form[item.name] = item.value.trim();
                });
-               console.log(Form);
-               /*this.$http.post('article',Form).then(res=>{
+               this.$http.post('article',Form).then(res=>{
                   this.$router.go(-1)
-               })*/
+               })
             })
          }
       }

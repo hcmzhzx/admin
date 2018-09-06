@@ -71,7 +71,7 @@
       },
       data(){
          return {
-            text: [{txt:'品牌设置', src:'brand_index'}, {txt:'合作名单', src:`partner_index`}, {txt:'合作微信配置'}],
+            text: [{txt:'品牌设置', src:'brand_index'}, {txt:'合作名单', src:`partner_index?id=${this.$route.query.id}`}, {txt:'合作微信配置'}],
             ID: '',  // 品牌ID
             dataList:[],  //微信配置数据
             is_w:''  // 判断有无配置信息 0:无
@@ -125,7 +125,7 @@
                });
                let Form = {};
                Formdata.forEach((item)=>{
-                  Form[item.name] = item.value;
+                  Form[item.name] = item.value.trim();
                });
                // 判断有无原始数据
                if(this.is_w != '0'){

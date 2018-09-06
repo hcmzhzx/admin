@@ -71,7 +71,7 @@
                      <a href="#" data-type="select" :data-pk="item.partner.id" data-name="dealer_id" :data-value="item.dealer_id" class="editable editable-click">{{item.dealer.name}}</a>
                   </td>
                   <td>
-                     <a href="#" data-type="text" :data-pk="item.id" data-name="pid" :data-value="item.parent.id" class="editable editable-click">{{item.parent.name}}</a>
+                     <a href="#" data-type="text" :data-pk="item.id" data-name="pid" :data-value="item.parent.name" class="editable editable-click">{{item.parent.name}}</a>
                   </td>
                   <td>
                      <a href="#" data-type="text" :data-pk="item.id" data-name="phone" class="editable editable-click">{{item.phone}}</a>
@@ -162,45 +162,19 @@
             this.partnerList = res
          });
 
-         const _this = this;
          this.$nextTick(()=>{
-            setTimeout(()=>{
-               $('.table a[data-type="select"][data-name="dealer_id"]').editable({
-                  emptytext: '--',
-                  showbuttons: false,
-                  source: function () {
-                     console.log(this);
-                     let json = $.ajax({
-                        type:'get',
-                        async:false,
-                        headers:{'Authorization':localStorage.getItem('access_token')},
-                        url:`${API_URL}/admin/users?include=brand,partner,dealer,parent&partner_id=${this.getAttribute('data-pk')}&type=1`,
-                        success:function(data){return data}
-                     });
-                     return JSON.stringify(json.responseJSON.data.map((item)=>{
-                        let json={};
-                        json.text = item.name;
-                        json.value = item.id;
-                        return json;
-                     }))
-                  },
-                  success: function (res, val) {
-                     const name = this.getAttribute('data-name'), ID = this.getAttribute('data-pk'), form = {};
-                     form[name] = val;
-                     //_this.$http.patch(`users/${ID}`,form)  users?include=brand,partner,dealer,parent&partner_id=${id}&type=1
-                  }
-               })
-            },500)
+            this.$http.get(`dealers`).then(res=>{
+               console.log(res);
+            })
          })
       },
       updated(){
          const _this = this;
          // 经销商
-         /*$('.table a[data-type="select"][data-name="dealer_id"]').editable({
+         $('.table a[data-type="select"][data-name="dealer_id"]').editable({
             emptytext: '--',
             showbuttons: false,
             source: function () {
-               console.log(2);
                let json = $.ajax({
                   type:'get',
                   async:false,
@@ -220,7 +194,7 @@
                form[name] = val;
                //_this.$http.patch(`users/${ID}`,form)  users?include=brand,partner,dealer,parent&partner_id=${id}&type=1
             }
-         });*/
+         });
 
          // 下拉框
          $('.table a[data-type="select"][data-name!="dealer_id"]').editable({

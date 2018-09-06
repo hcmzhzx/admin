@@ -88,7 +88,7 @@
       },
       data(){
          return{
-            text: [{txt:'品牌设置', src:'brand_index'}, {txt:'合作名单'}],
+            text: [{txt:'合作名单'}],
             brandsList:[],  // 品牌列表
             brandList:[] // 合作名单列表
          }
@@ -102,7 +102,8 @@
                this.brandList = brand.data.filter((item)=>{
                   return item.brand.id == id;
                })
-            })
+            });
+            this.text.unshift({txt:'品牌设置', src:'brand_index'});
          } else {
             this.$http.get(`partner?include=brand`).then(brand=>{
                this.brandList = brand.data

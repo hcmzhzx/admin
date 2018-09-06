@@ -5,7 +5,7 @@
          <form class="post" @submit.prevent="sendForm">
             <div class="form-group">
                <label for="title">文章标题</label>
-               <input type="text" class="form-control large" name="title" :value="articleData.title" id="title" data-rule="*" data-errmsg="文章标题必须填写" data-sync="true">
+               <input type="text" class="form-control large" name="title" v-model="articleData.title" id="title" data-rule="*" data-errmsg="文章标题必须填写" data-sync="true">
             </div>
             <div class="form-group">
                <label for="brand_id">所属品牌</label>
@@ -30,13 +30,13 @@
                      <input type="file" accept="image/*" class="upfile" data-type="article" data-authority="article_upload"><span>点击选择图片</span>
                   </div>
                </div>
-               <input type="hidden" :value="cover" data-rule="*" data-errmsg="缩略图必须上传" data-sync="true">
+               <input type="hidden" v-model="cover" data-rule="*" data-errmsg="缩略图必须上传" data-sync="true">
             </div>
             <div class="form-group">
                <label for="audio">发布音频</label>
-               <input type="text" class="form-control medium" name="audio" :value="articleData.audio.title" id="audio" placeholder="音频标题">
-               <input type="text" class="form-control medium" name="desc" :value="articleData.audio.desc" placeholder="音频描述">
-               <input type="text" class="form-control medium" name="src" :value="articleData.audio.src" placeholder="音频地址">
+               <input type="text" class="form-control medium" name="audio" v-model="articleData.audio.title" id="audio" placeholder="音频标题">
+               <input type="text" class="form-control medium" name="desc" v-model="articleData.audio.desc" placeholder="音频描述">
+               <input type="text" class="form-control medium" name="src" v-model="articleData.audio.src" placeholder="音频地址">
             </div>
             <div class="form-group">
                <label for="audio">文章内容</label>
@@ -164,9 +164,9 @@
                   return item.value !== '' && item.name != 'editorValue';
                });
                Formdata.forEach((item)=>{
-                  Form[item.name] = item.value
+                  Form[item.name] = item.value.trim();
                });
-               this.$http.post('article',Form).then(res=>{
+               this.$http.patch(`article/${this.id}`,Form).then(res=>{
                   this.$router.go(-1)
                })
             })

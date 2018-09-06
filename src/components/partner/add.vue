@@ -149,10 +149,10 @@
                });
                let Form = {};
                Formdata.forEach((item)=>{
-                  Form[item.name] = item.value;
+                  Form[item.name] = item.value.trim();
                });
                this.$http.post('partner',Form).then(res=>{
-                  this.$router.go(-1)
+                  this.$router.go(-1);
                }).catch(err=>{
                   console.log(err);
                   this.$message({

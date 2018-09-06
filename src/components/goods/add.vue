@@ -152,7 +152,7 @@
                      }
                      this.checkeds.push(item.value)
                   } else {
-                     form[item.name]=item.value; // 添加其他项
+                     form[item.name]=item.value.trim(); // 添加其他项
                   }
                });
                // 判断长度是否全选

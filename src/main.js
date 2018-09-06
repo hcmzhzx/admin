@@ -45,7 +45,7 @@ Vue.mixin({
       //地址截取
       Substr(str){
          if(!str) return false;
-         return str.substring(str.lastIndexOf('cn/')+3);
+         return str.substring(str.lastIndexOf('.cn/')+4);
       },
 
       // 初始化富文本编辑器

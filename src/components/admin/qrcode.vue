@@ -38,7 +38,6 @@
                      <img :src="item.qrcode" width="80" height="80">
                   </td>
                   <td>
-                     <!--{{item.admin.account}}-->
                      <a href="#" data-type="select" :data-pk="item.id" data-name="admin_id" :data-source="JSON.stringify(their(beginList))" :data-value="item.admin_id" class="editable editable-click"></a>
                   </td>
                   <td>

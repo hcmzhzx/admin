@@ -105,18 +105,18 @@
          // 请求分类列表
          this.$http.get('article_category').then(article=>{
             this.sortList = article.data.map((item)=>{
-                let json={};
-                json.text = item.title;
-                json.value = item.id;
-                return json;
+               let json={};
+               json.text = item.title;
+               json.value = item.id;
+               return json;
             })
-         })
+         });
 
          // 获取文章列表
          this.$http.get('article?include=brand,category').then(article=>{
             this.articleList = article.data;
             this.meta = article.meta.pagination;
-         })
+         });
       },
       updated(){
          const _this = this;
